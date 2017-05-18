@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <io.vov.vitamio.widget.VideoView
+        android:id="@+id/vitamio_videoView"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:layout_weight="3.5" />
+
+    <Button
+        android:layout_marginTop="20dp"
+        android:id="@+id/bttTakeDronePhoto"
+        android:background="@drawable/tondo"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>
