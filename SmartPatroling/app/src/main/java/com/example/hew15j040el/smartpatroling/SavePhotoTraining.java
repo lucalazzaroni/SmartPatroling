@@ -3,12 +3,17 @@ package com.example.hew15j040el.smartpatroling;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -103,6 +108,28 @@ public class SavePhotoTraining extends Activity {
                     Toast.makeText(getApplicationContext(), "Picture saved", Toast.LENGTH_SHORT).show();
                 }
 
+                fileUri = Uri.fromFile(to); //percorso del file rinominato
+//                BitmapFactory.Options optionsIm = new BitmapFactory.Options();
+//                bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
+//                        optionsIm);
+                Bitmap bnBitmap = toGrayscale(bitmap);
+                try {
+                    File bnFile;
+                    String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/Smart Patroling/"+ writename.getText().toString() + "bn.jpg";
+                    bnFile = new File(_bnPath);
+                    FileOutputStream fos = new FileOutputStream(bnFile);
+                    bnBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    fos.close();
+                }
+                catch (FileNotFoundException fnfe)
+                {
+                    fnfe.printStackTrace();
+                }
+                catch (IOException ioe)
+                {
+                    ioe.printStackTrace();
+                }
+
 //                capturePhoto(null);
                 Intent itpt = new Intent(getApplicationContext(), SavePhotoTraining.class);
                 startActivity(itpt);
@@ -153,7 +180,7 @@ public class SavePhotoTraining extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             try {
-                imgPreview.setRotation(90);
+//                imgPreview.setRotation(90);
                 imgPreview.setVisibility(View.VISIBLE);
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
@@ -210,6 +237,8 @@ public class SavePhotoTraining extends Activity {
         // start the image capture Intent
         startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
 
+
+
     }
 
     private File getOutputMediaFile(int type) {
@@ -237,5 +266,22 @@ public class SavePhotoTraining extends Activity {
         else
             Toast.makeText(getApplicationContext(), "Internal memory not available", Toast.LENGTH_SHORT).show();
         return  null;
+    }
+
+    public Bitmap toGrayscale(Bitmap bmpOriginal)
+    {
+        int width, height;
+        height = bmpOriginal.getHeight();
+        width = bmpOriginal.getWidth();
+
+        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        Canvas c = new Canvas(bmpGrayscale);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(bmpOriginal, 0, 0, paint);
+        return bmpGrayscale;
     }
 }
