@@ -33,7 +33,7 @@
             android:id="@+id/bttSaveContinue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save and Continue Recognition" />
+            android:text="Save and Continue Training" />
 
         <Button
             android:id="@+id/bttSaveHome"

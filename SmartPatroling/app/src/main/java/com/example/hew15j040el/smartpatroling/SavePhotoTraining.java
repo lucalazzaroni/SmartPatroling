@@ -169,7 +169,7 @@ public class SavePhotoTraining extends Activity {
 //            Toast.makeText(getApplicationContext(),
 //                    "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
 //                    .show();
-            Toast.makeText(getApplicationContext(), "Result code error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Camera closed", Toast.LENGTH_SHORT).show();
 
             Intent ima = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(ima);
