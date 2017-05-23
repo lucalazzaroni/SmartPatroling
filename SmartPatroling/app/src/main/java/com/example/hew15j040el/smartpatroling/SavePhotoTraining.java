@@ -180,7 +180,7 @@ public class SavePhotoTraining extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             try {
-//                imgPreview.setRotation(90);
+                imgPreview.setRotation(90);
                 imgPreview.setVisibility(View.VISIBLE);
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
