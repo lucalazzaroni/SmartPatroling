@@ -34,7 +34,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SavePhotoTraining">
+        <activity android:windowSoftInputMode="adjustResize"
+            android:name=".SavePhotoTraining">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
