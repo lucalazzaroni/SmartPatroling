@@ -13,7 +13,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -72,20 +74,7 @@ public class SavePhotoTraining extends Activity {
 
             @Override
             public void onClick(View v) {
-                _writename = writename.getText().toString() + ".jpg";
-
-
-
-//                File from = new File(mediaStorageDir.getPath(), "IMG_temp.jpg");
-                File to = new File(mediaStorageDir.getPath(),_writename);
-                if(!mediaFile.renameTo(to)){
-                    Toast.makeText(getApplicationContext(), "Image not renamed!", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(), "Picture saved", Toast.LENGTH_SHORT).show();
-                }
-//                capturePhoto(null);
+                saveNormalAndBW();
                 Intent ima = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(ima);
             }
@@ -97,40 +86,7 @@ public class SavePhotoTraining extends Activity {
 
             @Override
             public void onClick(View v) {
-                _writename = writename.getText().toString() + ".jpg";
-//                File from = new File(mediaStorageDir.getPath(), "IMG_temp.jpg");
-                File to = new File(mediaStorageDir.getPath(),_writename);
-                if(!mediaFile.renameTo(to)){
-                    Toast.makeText(getApplicationContext(), "Image not renamed!", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(), "Picture saved", Toast.LENGTH_SHORT).show();
-                }
-
-                fileUri = Uri.fromFile(to); //percorso del file rinominato
-//                BitmapFactory.Options optionsIm = new BitmapFactory.Options();
-//                bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
-//                        optionsIm);
-                Bitmap bnBitmap = toGrayscale(bitmap);
-                try {
-                    File bnFile;
-                    String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/Smart Patroling/"+ writename.getText().toString() + "bn.jpg";
-                    bnFile = new File(_bnPath);
-                    FileOutputStream fos = new FileOutputStream(bnFile);
-                    bnBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    fos.close();
-                }
-                catch (FileNotFoundException fnfe)
-                {
-                    fnfe.printStackTrace();
-                }
-                catch (IOException ioe)
-                {
-                    ioe.printStackTrace();
-                }
-
-//                capturePhoto(null);
+                saveNormalAndBW();
                 Intent itpt = new Intent(getApplicationContext(), SavePhotoTraining.class);
                 startActivity(itpt);
             }
@@ -270,18 +226,65 @@ public class SavePhotoTraining extends Activity {
 
     public Bitmap toGrayscale(Bitmap bmpOriginal)
     {
-        int width, height;
-        height = bmpOriginal.getHeight();
-        width = bmpOriginal.getWidth();
+//        int width, height;
+//        height = bmpOriginal.getHeight();
+//        width = bmpOriginal.getWidth();
 
-        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        Bitmap bmpGrayscale = Bitmap.createBitmap(360, 360, Bitmap.Config.RGB_565);
         Canvas c = new Canvas(bmpGrayscale);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
         cm.setSaturation(0);
         ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
         paint.setColorFilter(f);
-        c.drawBitmap(bmpOriginal, 0, 0, paint);
+//        c.drawBitmap(bmpOriginal, 0, 0, paint);
+//        Ruoto l immagine originale mettendola dritta
+
+        Matrix rotate = new Matrix();
+        rotate.preRotate(90);
+        Bitmap rotatedBitmap=Bitmap.createBitmap(bmpOriginal,0,0,bmpOriginal.getWidth(),bmpOriginal.getHeight(),rotate,true);
+        Canvas canvas= new Canvas(rotatedBitmap);
+        canvas.drawBitmap(bmpOriginal,new Rect(0,0,1600,1200), new Rect(), null);
+
+        //funziona per l immagine girata a sx rispetto ad una dritta
+//        c.drawBitmap(bmpOriginal, new Rect(200,0,1400,1200),new Rect(0,0,360,360), paint);
+        // funziona con l immagine dritta
+        c.drawBitmap(rotatedBitmap, new Rect(0,150,1200,1350),new Rect(0,0,360,360), paint);
         return bmpGrayscale;
+    }
+
+    public void saveNormalAndBW() {
+        _writename = writename.getText().toString() + ".jpg";
+//                File from = new File(mediaStorageDir.getPath(), "IMG_temp.jpg");
+        File to = new File(mediaStorageDir.getPath(),_writename);
+        if(!mediaFile.renameTo(to)){
+            Toast.makeText(getApplicationContext(), "Image not renamed!", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "Picture saved", Toast.LENGTH_SHORT).show();
+        }
+
+        fileUri = Uri.fromFile(to); //percorso del file rinominato
+//                BitmapFactory.Options optionsIm = new BitmapFactory.Options();
+//                bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
+//                        optionsIm);
+        Bitmap bnBitmap = toGrayscale(bitmap);
+        try {
+            File bnFile;
+            String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/Smart Patroling/"+ writename.getText().toString() + "bn.jpg";
+            bnFile = new File(_bnPath);
+            FileOutputStream fos = new FileOutputStream(bnFile);
+            bnBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.close();
+        }
+        catch (FileNotFoundException fnfe)
+        {
+            fnfe.printStackTrace();
+        }
+        catch (IOException ioe)
+        {
+            ioe.printStackTrace();
+        }
     }
 }

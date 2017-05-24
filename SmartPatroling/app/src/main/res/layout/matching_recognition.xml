@@ -6,19 +6,30 @@
     <LinearLayout
         android:layout_height="fill_parent"
         android:layout_width="wrap_content"
-        android:orientation="vertical">
-
+        android:orientation="vertical"
+        android:weightSum="1">
         <Button
-            android:id="@+id/bttHome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Home"/>
-
-        <Button
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textSize="18dp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bttshape2"
             android:id="@+id/bttContinueRec"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:text="Continue Recognition"/>
+
+        <ImageButton
+            android:backgroundTint="@color/transparent"
+            android:id="@+id/bttHome"
+            android:layout_width="88dp"
+            android:layout_height="61dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="350dp"
+            android:layout_weight="0.00"
+            android:scaleType="fitCenter"
+            android:src="@drawable/home" />
+
 
     </LinearLayout>
 </LinearLayout>

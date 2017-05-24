@@ -30,16 +30,27 @@
             android:hint="Enter name"/>
 
         <Button
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bttshape2"
             android:id="@+id/bttSaveContinue"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save and Continue Training" />
+            android:layout_height="50dp"
+            android:text="Save and Continue Recognition"/>
 
         <Button
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/shapebtt1"
             android:id="@+id/bttSaveHome"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save and Return Home" />
+            android:layout_height="50dp"
+            android:text="Save and return Home"/>
 
         <!--<Button-->
         <!--android:id="@+id/bttCancel"-->

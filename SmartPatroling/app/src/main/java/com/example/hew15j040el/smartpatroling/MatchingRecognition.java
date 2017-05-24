@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 /**
  * Created by HEW15J040EL on 10/05/2017.
@@ -12,14 +13,14 @@ import android.widget.Button;
 
 public class MatchingRecognition extends Activity {
 
-    Button bttHome;
+    ImageButton bttHome;
     Button bttContinueRec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.matching_recognition);
-        bttHome = (Button)findViewById(R.id.bttHome);
+        bttHome = (ImageButton)findViewById(R.id.bttHome);
 
         bttHome.setOnClickListener(new View.OnClickListener() {
 
