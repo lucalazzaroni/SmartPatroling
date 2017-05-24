@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import static java.lang.Thread.sleep;
 
 /**
  * Created by HEW15J040EL on 10/05/2017.
@@ -37,13 +40,14 @@ public class SavePhotoTraining extends Activity {
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 0;
     public static final int MEDIA_TYPE_IMAGE = 1;
     private static final String IMAGE_DIRECTORY_NAME = "Smart Patroling";
+    private static final String IMAGE_BW_DIRECTORY_NAME = "Smart Patroling BW";
     private Uri fileUri; // file url to store imgPreview/video
 
 
 //    Context context = null;
     Bitmap bitmap;
     TextView name;
-    EditText writename;
+    EditText writename = null;
     Button bttSaveHome;
     Button bttSaveContinue;
     String imgPath;
@@ -52,6 +56,7 @@ public class SavePhotoTraining extends Activity {
     ImageView imgPreview;
     File mediaStorageDir;
     File mediaFile;
+    File mediaStorageDirBW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,9 +79,12 @@ public class SavePhotoTraining extends Activity {
 
             @Override
             public void onClick(View v) {
-                saveNormalAndBW();
-                Intent ima = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(ima);
+                if(saveNormalAndBW()) {
+                    Intent ima = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(ima);
+                }
+                else
+                    return;
             }
         });
 
@@ -86,9 +94,12 @@ public class SavePhotoTraining extends Activity {
 
             @Override
             public void onClick(View v) {
-                saveNormalAndBW();
-                Intent itpt = new Intent(getApplicationContext(), SavePhotoTraining.class);
-                startActivity(itpt);
+                if(saveNormalAndBW()) {
+                    Intent itpt = new Intent(getApplicationContext(), SavePhotoTraining.class);
+                    startActivity(itpt);
+                }
+                else
+                    return;
             }
         });
 
@@ -212,8 +223,22 @@ public class SavePhotoTraining extends Activity {
                 }
             }
 
+            //creazione cartella per foto BW
+            mediaStorageDirBW = new File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                    IMAGE_BW_DIRECTORY_NAME);
+
+            if (!mediaStorageDirBW.exists()) {
+                if (!mediaStorageDirBW.mkdirs()) {
+                    Log.d(IMAGE_BW_DIRECTORY_NAME, "Oops! Failed to create "
+                            + IMAGE_BW_DIRECTORY_NAME + " directory");
+                    return null;
+                }
+            }
+
+
             if (type == MEDIA_TYPE_IMAGE) {
-                imgPath = mediaStorageDir.getPath() + File.separator + "IMG_temp.jpg";
+                imgPath = mediaStorageDir.getPath() + File.separator + "IMG_temp.jpeg";
                 mediaFile = new File(imgPath);
             } else
                 return null;
@@ -224,7 +249,7 @@ public class SavePhotoTraining extends Activity {
         return  null;
     }
 
-    public Bitmap toGrayscale(Bitmap bmpOriginal)
+    public Bitmap toGreyScale(Bitmap bmpOriginal)
     {
 //        int width, height;
 //        height = bmpOriginal.getHeight();
@@ -253,9 +278,21 @@ public class SavePhotoTraining extends Activity {
         return bmpGrayscale;
     }
 
-    public void saveNormalAndBW() {
-        _writename = writename.getText().toString() + ".jpg";
+    public boolean saveNormalAndBW() {
+        _writename = writename.getText().toString() + ".jpeg";
+
+        if(TextUtils.isEmpty(writename.getText().toString())) //se non viene dato un nome all'immagine avvisa e non salvare
+        {
+            writename.setError("Image must have a name!");
+            return false;
+        }
+
 //                File from = new File(mediaStorageDir.getPath(), "IMG_temp.jpg");
+//        while(_writename == ".jpeg")
+//        {
+//            Toast.makeText(getApplicationContext(), "Image must have a name!", Toast.LENGTH_SHORT).show();
+//            _writename = writename.getText().toString() + ".jpeg";
+//        }
         File to = new File(mediaStorageDir.getPath(),_writename);
         if(!mediaFile.renameTo(to)){
             Toast.makeText(getApplicationContext(), "Image not renamed!", Toast.LENGTH_SHORT).show();
@@ -269,10 +306,10 @@ public class SavePhotoTraining extends Activity {
 //                BitmapFactory.Options optionsIm = new BitmapFactory.Options();
 //                bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
 //                        optionsIm);
-        Bitmap bnBitmap = toGrayscale(bitmap);
+        Bitmap bnBitmap = toGreyScale(bitmap);
         try {
             File bnFile;
-            String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/Smart Patroling/"+ writename.getText().toString() + "bn.jpg";
+            String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + IMAGE_BW_DIRECTORY_NAME + "/"+ writename.getText().toString() + "_bw.jpeg";
             bnFile = new File(_bnPath);
             FileOutputStream fos = new FileOutputStream(bnFile);
             bnBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
@@ -286,5 +323,8 @@ public class SavePhotoTraining extends Activity {
         {
             ioe.printStackTrace();
         }
+        return true;
     }
+
+
 }
