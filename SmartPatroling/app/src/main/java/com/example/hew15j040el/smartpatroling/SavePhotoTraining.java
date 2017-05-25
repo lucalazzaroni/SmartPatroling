@@ -1,6 +1,7 @@
 package com.example.hew15j040el.smartpatroling;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -44,7 +45,8 @@ public class SavePhotoTraining extends Activity {
     private Uri fileUri; // file url to store imgPreview/video
 
 
-//    Context context = null;
+
+    //    Context context = null;
     Bitmap bitmap;
     TextView name;
     EditText writename = null;
@@ -80,8 +82,11 @@ public class SavePhotoTraining extends Activity {
             @Override
             public void onClick(View v) {
                 if(saveNormalAndBW()) {
+
                     Intent ima = new Intent(getApplicationContext(), MainActivity.class);
+
                     startActivity(ima);
+
                 }
                 else
                     return;
@@ -309,7 +314,7 @@ public class SavePhotoTraining extends Activity {
         Bitmap bnBitmap = toGreyScale(bitmap);
         try {
             File bnFile;
-            String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + IMAGE_BW_DIRECTORY_NAME + "/"+ writename.getText().toString() + "_bw.jpeg";
+            String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + IMAGE_BW_DIRECTORY_NAME + "/"+ writename.getText().toString() + ".jpeg";
             bnFile = new File(_bnPath);
             FileOutputStream fos = new FileOutputStream(bnFile);
             bnBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);

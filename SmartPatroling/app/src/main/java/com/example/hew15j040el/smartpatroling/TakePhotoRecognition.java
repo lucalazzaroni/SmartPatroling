@@ -3,11 +3,15 @@ package com.example.hew15j040el.smartpatroling;
 import android.content.Context;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
+
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.widget.MediaController;
@@ -25,6 +29,7 @@ public class TakePhotoRecognition extends Activity {
     private VideoView myVideoView;
     private final String PATH = "tcp://192.168.1.1:5555/";
     private String imgpath = null;
+    private Bitmap imgBitmap = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +64,13 @@ public class TakePhotoRecognition extends Activity {
             public void onClick(View v) {
                 Log.i(TAG, "setOnClickListener");
                 capturePhoto(null);
+
+                //Convert to byte array
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                imgBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
                 Intent imr = new Intent(getApplicationContext(),MatchingRecognition.class);
-                imr.putExtra("imgPath",imgpath);
+                imr.putExtra("imageByteArray",byteArray);
                 startActivity(imr);
             }
         });
@@ -70,6 +80,7 @@ public class TakePhotoRecognition extends Activity {
         try {
             PhotoSaver ps = new PhotoSaver(context, myVideoView.getMediaPlayer());
             imgpath = ps.record();
+            imgBitmap = ps.image;
         }
         catch (Exception e) {
 

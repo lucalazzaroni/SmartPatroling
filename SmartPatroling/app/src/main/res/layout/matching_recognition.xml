@@ -4,32 +4,61 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_height="fill_parent"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="1">
-        <Button
-            android:layout_marginTop="10dp"
+
+
+        <ImageView
+            android:id="@+id/imgRec"
+            android:layout_width="350dp"
+            android:layout_marginTop="0dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:textSize="18dp"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/bttshape2"
-            android:id="@+id/bttContinueRec"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:text="Continue Recognition"/>
+            android:src="@drawable/falco"
+            android:layout_weight="0.50" />
 
-        <ImageButton
-            android:backgroundTint="@color/transparent"
-            android:id="@+id/bttHome"
-            android:layout_width="88dp"
-            android:layout_height="61dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginTop="350dp"
-            android:layout_weight="0.00"
-            android:scaleType="fitCenter"
-            android:src="@drawable/home" />
+        <ImageView
+            android:id="@+id/imgTra"
+            android:layout_width="350dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/profiloutente"
+            android:layout_weight="0.50" />
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_gravity="center_horizontal">
+                <Button
+                    android:id="@+id/bttContinueRec"
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:textStyle="italic"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/bttshape2"
+                    android:text="Continue Recognition"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18dp" />
+
+                <ImageButton
+                    android:id="@+id/bttHome"
+                    android:layout_width="75dp"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_gravity="center_horizontal"
+                    android:backgroundTint="@color/transparent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/home"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/bttContinueRec" />
+
+            </RelativeLayout>
 
     </LinearLayout>
+
 </LinearLayout>

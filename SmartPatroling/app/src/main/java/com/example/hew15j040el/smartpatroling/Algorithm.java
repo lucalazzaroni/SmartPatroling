@@ -86,4 +86,27 @@ public class Algorithm extends Activity {
         }
         return eigen;
     }
+
+    public int[][] Covarianza(int[][] eigen){
+        int[][] covarianza=new int[129600][129600];
+        //traspongo eigen
+        int[][] eigenT=transposeMatrix(eigen);
+        for (int i = 0; i < 129600; i++)
+            for (int j = 0; j < numberOfImages; j++)
+                for (int k = 0; k < numberOfImages; k++)
+                    covarianza[i][j] += eigen[i][k] * eigenT[k][j];
+        for(int i=0;i<covarianza.length;i++)
+            for(int j=0;j<covarianza.length;j++)
+                covarianza[i][j]=covarianza[i][j] / numberOfImages;
+
+        return covarianza;
+    }
+
+    public static int[][] transposeMatrix(int [][] m){
+        int[][] temp = new int[m[0].length][m.length];
+        for (int i = 0; i < m.length; i++)
+            for (int j = 0; j < m[0].length; j++)
+                temp[j][i] = m[i][j];
+        return temp;
+    }
 }

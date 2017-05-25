@@ -80,7 +80,7 @@ public class PhotoSaver {
                 Bitmap bwImage = toGreyScale(image);
                 try {
                     File bnFile;
-                    String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + DRONE_BW_DIRECTORY_NAME + "/"+ finalname + "_bw.jpeg";
+                    String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + DRONE_BW_DIRECTORY_NAME + "/"+ finalname + ".jpeg";
                     bnFile = new File(_bnPath);
                     FileOutputStream fosBw = new FileOutputStream(bnFile);
                     bwImage.compress(Bitmap.CompressFormat.JPEG, 100, fosBw);
