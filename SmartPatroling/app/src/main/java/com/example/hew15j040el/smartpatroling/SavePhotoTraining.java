@@ -48,6 +48,10 @@ public class SavePhotoTraining extends Activity {
 
     //    Context context = null;
     Bitmap bitmap = null;
+    Bitmap bmpGrayscale=null;
+    Bitmap rotatedBitmap=null;
+    Canvas c=null;
+    Canvas canvas=null;
     TextView name;
     EditText writename = null;
     Button bttSaveHome;
@@ -265,8 +269,8 @@ public class SavePhotoTraining extends Activity {
 //        height = bmpOriginal.getHeight();
 //        width = bmpOriginal.getWidth();
 
-        Bitmap bmpGrayscale = Bitmap.createBitmap(360, 360, Bitmap.Config.RGB_565);
-        Canvas c = new Canvas(bmpGrayscale);
+        bmpGrayscale = Bitmap.createBitmap(360, 360, Bitmap.Config.RGB_565);
+        c = new Canvas(bmpGrayscale);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
         cm.setSaturation(0);
@@ -277,14 +281,15 @@ public class SavePhotoTraining extends Activity {
 
         Matrix rotate = new Matrix();
         rotate.preRotate(90);
-        Bitmap rotatedBitmap=Bitmap.createBitmap(bmpOriginal,0,0,bmpOriginal.getWidth(),bmpOriginal.getHeight(),rotate,true);
-        Canvas canvas= new Canvas(rotatedBitmap);
+        rotatedBitmap=Bitmap.createBitmap(bmpOriginal,0,0,bmpOriginal.getWidth(),bmpOriginal.getHeight(),rotate,true);
+        canvas= new Canvas(rotatedBitmap);
         canvas.drawBitmap(bmpOriginal,new Rect(0,0,1600,1200), new Rect(), null);
 
         //funziona per l immagine girata a sx rispetto ad una dritta
 //        c.drawBitmap(bmpOriginal, new Rect(200,0,1400,1200),new Rect(0,0,360,360), paint);
         // funziona con l immagine dritta
         c.drawBitmap(rotatedBitmap, new Rect(0,150,1200,1350),new Rect(0,0,360,360), paint);
+
         return bmpGrayscale;
     }
 
@@ -336,5 +341,30 @@ public class SavePhotoTraining extends Activity {
         return true;
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
 
+        recylingBitmap(bitmap);
+        recylingBitmap(bnBitmap);
+        recyclingCanvas(c);
+        recylingBitmap(bmpGrayscale);
+        recyclingCanvas(canvas);
+        recylingBitmap(rotatedBitmap);
+
+    }
+    public void recylingBitmap (Bitmap bm)
+    {
+        if(bm!=null){
+            bm.recycle();
+            bm=null;
+        }
+    }
+    public void recyclingCanvas(Canvas cv)
+    {
+        if (cv != null) {
+            cv.setBitmap(null);
+            cv = null;
+        }
+    }
 }

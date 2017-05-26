@@ -34,7 +34,10 @@ import io.vov.vitamio.MediaPlayer;
 public class PhotoSaver {
     String filename;
     String finalname;
-    Bitmap image;
+    Bitmap image=null;
+    Bitmap bwImage =null;
+    Bitmap bmpGrayscale=null;
+    Canvas c=null;
     Calendar rightNow;
     MediaPlayer mMediaPlayer;
     Context context;
@@ -77,7 +80,9 @@ public class PhotoSaver {
                 image.compress(Bitmap.CompressFormat.JPEG, 100, fos); //salva la foto a colori
                 fos.close();
 
-                Bitmap bwImage = toGreyScale(image);
+                recylingBitmap(image);
+
+                bwImage = toGreyScale(image);
                 try {
                     File bnFile;
                     String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + DRONE_BW_DIRECTORY_NAME + "/"+ finalname + ".jpeg";
@@ -85,6 +90,7 @@ public class PhotoSaver {
                     FileOutputStream fosBw = new FileOutputStream(bnFile);
                     bwImage.compress(Bitmap.CompressFormat.JPEG, 100, fosBw);
                     fos.close();
+                    recylingBitmap(bwImage);
                 }
                 catch (FileNotFoundException fnfe)
                 {
@@ -158,15 +164,34 @@ public class PhotoSaver {
     }
 
     public Bitmap toGreyScale(Bitmap bmpOriginal){
-        Bitmap bmpGrayscale = Bitmap.createBitmap(360, 360, Bitmap.Config.RGB_565);
-        Canvas c = new Canvas(bmpGrayscale);
+        bmpGrayscale = Bitmap.createBitmap(360, 360, Bitmap.Config.RGB_565);
+        c = new Canvas(bmpGrayscale);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
         cm.setSaturation(0);
         ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
         paint.setColorFilter(f);
-
         c.drawBitmap(bmpOriginal, new Rect(140,0,500,360),new Rect(0,0,360,360), paint);
+
+        recyclingCanvas(c);
+
         return bmpGrayscale;
     }
+
+
+    public void recylingBitmap (Bitmap bm)
+    {
+        if(bm!=null){
+            bm.recycle();
+            bm=null;
+        }
+    }
+    public void recyclingCanvas(Canvas cv)
+    {
+        if (cv != null) {
+            cv.setBitmap(null);
+            cv = null;
+        }
+    }
+
 }

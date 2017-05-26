@@ -64,13 +64,16 @@ public class TakePhotoRecognition extends Activity {
             public void onClick(View v) {
                 Log.i(TAG, "setOnClickListener");
                 capturePhoto(null);
+                Intent imr = new Intent(getApplicationContext(), MatchingRecognition.class);
 
                 //Convert to byte array
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                imgBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
-                Intent imr = new Intent(getApplicationContext(),MatchingRecognition.class);
-                imr.putExtra("imageByteArray",byteArray);
+                if(imgBitmap!=null) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    imgBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    imr.putExtra("imageByteArray", stream.toByteArray());
+                }
+
+                recylingBitmap(imgBitmap);
                 startActivity(imr);
             }
         });
@@ -87,6 +90,14 @@ public class TakePhotoRecognition extends Activity {
             Toast.makeText(getApplicationContext(), "Picture error!",Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public void recylingBitmap (Bitmap bm)
+    {
+        if(bm!=null){
+            bm.recycle();
+            bm=null;
+        }
     }
 }
 

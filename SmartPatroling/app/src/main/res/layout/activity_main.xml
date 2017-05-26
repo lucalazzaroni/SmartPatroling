@@ -19,14 +19,14 @@
         android:textSize="20dp" />
 
     <Button
-        android:textStyle="italic"
-        android:textSize="20dp"
+        android:id="@+id/bttRecognition"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:id="@+id/bttRecognition"
-        android:layout_width="287dp"
-        android:layout_height="50dp"
         android:background="@drawable/shapebtt1"
         android:text="Recognition"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        android:textStyle="italic" />
 </LinearLayout>

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * Created by HEW15J040EL on 10/05/2017.
@@ -18,6 +19,7 @@ public class MatchingRecognition extends Activity {
 
     ImageButton bttHome;
     Button bttContinueRec;
+    TextView name=null;
     ImageView imgRec;
     ImageView imgTra;
     Bitmap imgBitmap;
@@ -29,15 +31,18 @@ public class MatchingRecognition extends Activity {
 
         imgRec = (ImageView) findViewById(R.id.imgRec);
         imgTra = (ImageView) findViewById(R.id.imgTra);
+        name = (TextView)  findViewById(R.id.name);
+        name.setText("Unknown");
         bttHome = (ImageButton)findViewById(R.id.bttHome);
 
         //prendo la bitmap dell'immagine scattata nella TakePhotoRecognition
-        byte[] byteArray = getIntent().getByteArrayExtra("imageByteArray");
-        imgBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        if(getIntent().hasExtra("imageByteArray")) {
+            byte[] byteArray = getIntent().getByteArrayExtra("imageByteArray");
+            imgBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
-        //metto in imgRec l'immagine scattata nella TakePhotoRecognition
-        imgRec.setImageBitmap(imgBitmap);
-
+            //metto in imgRec l'immagine scattata nella TakePhotoRecognition
+            imgRec.setImageBitmap(imgBitmap);
+        }
         bttHome.setOnClickListener(new View.OnClickListener() {
 
             @Override
