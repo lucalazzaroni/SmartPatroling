@@ -47,7 +47,7 @@ public class SavePhotoTraining extends Activity {
 
 
     //    Context context = null;
-    Bitmap bitmap;
+    Bitmap bitmap = null;
     TextView name;
     EditText writename = null;
     Button bttSaveHome;
@@ -59,6 +59,7 @@ public class SavePhotoTraining extends Activity {
     File mediaStorageDir;
     File mediaFile;
     File mediaStorageDirBW;
+    Bitmap bnBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,7 @@ public class SavePhotoTraining extends Activity {
             public void onClick(View v) {
                 if(saveNormalAndBW()) {
 
+//                    bitmap.recycle();
                     Intent ima = new Intent(getApplicationContext(), MainActivity.class);
 
                     startActivity(ima);
@@ -100,6 +102,8 @@ public class SavePhotoTraining extends Activity {
             @Override
             public void onClick(View v) {
                 if(saveNormalAndBW()) {
+
+//                    bitmap.recycle();
                     Intent itpt = new Intent(getApplicationContext(), SavePhotoTraining.class);
                     startActivity(itpt);
                 }
@@ -159,6 +163,7 @@ public class SavePhotoTraining extends Activity {
                         options);
 
                 imgPreview.setImageBitmap(bitmap);
+//                bitmap.recycle();
             } catch (NullPointerException e) {
 
                 Toast.makeText(getApplicationContext(), "Picture error", Toast.LENGTH_SHORT).show();
@@ -311,7 +316,7 @@ public class SavePhotoTraining extends Activity {
 //                BitmapFactory.Options optionsIm = new BitmapFactory.Options();
 //                bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
 //                        optionsIm);
-        Bitmap bnBitmap = toGreyScale(bitmap);
+        bnBitmap = toGreyScale(bitmap);
         try {
             File bnFile;
             String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + IMAGE_BW_DIRECTORY_NAME + "/"+ writename.getText().toString() + ".jpeg";
