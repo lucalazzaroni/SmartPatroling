@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button bttTraining;
     Button bttRecognition;
+    Button bttSwipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
         bttTraining =(Button)findViewById(R.id.bttTraining);
         bttRecognition =(Button)findViewById(R.id.bttRecognition);
+        bttSwipe = (Button)findViewById(R.id.bttswipe);
 
         GifDrawable gif = null;
         try{
@@ -49,8 +51,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
+        bttSwipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent_info = new Intent(MainActivity.this, SwipeActivity.class);
+                startActivity(intent_info);
+                overridePendingTransition(R.anim.up, R.anim.nochange);
+            }
+        });
 
     }
 
