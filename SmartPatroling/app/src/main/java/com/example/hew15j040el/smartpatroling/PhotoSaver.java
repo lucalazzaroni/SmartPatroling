@@ -80,8 +80,6 @@ public class PhotoSaver {
                 image.compress(Bitmap.CompressFormat.JPEG, 100, fos); //salva la foto a colori
                 fos.close();
 
-                recylingBitmap(image);
-
                 bwImage = toGreyScale(image);
                 try {
                     File bnFile;
@@ -113,6 +111,7 @@ public class PhotoSaver {
         }else{
             Toast.makeText(context, "Internal memory not available" , Toast.LENGTH_SHORT).show();
         }
+//        recylingBitmap(image);
         return imgname;
     }
 
@@ -164,7 +163,7 @@ public class PhotoSaver {
     }
 
     public Bitmap toGreyScale(Bitmap bmpOriginal){
-        bmpGrayscale = Bitmap.createBitmap(360, 360, Bitmap.Config.RGB_565);
+        bmpGrayscale = Bitmap.createBitmap(360, 360, bmpOriginal.getConfig());
         c = new Canvas(bmpGrayscale);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
@@ -173,7 +172,9 @@ public class PhotoSaver {
         paint.setColorFilter(f);
         c.drawBitmap(bmpOriginal, new Rect(140,0,500,360),new Rect(0,0,360,360), paint);
 
-        recyclingCanvas(c);
+        //bmpGrayscale.setPixel(0,0, bmpOriginal.getPixel(0,0)    );
+
+        // recyclingCanvas(c);
 
         return bmpGrayscale;
     }

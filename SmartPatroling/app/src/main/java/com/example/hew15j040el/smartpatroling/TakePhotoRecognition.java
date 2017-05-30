@@ -86,7 +86,7 @@ public class TakePhotoRecognition extends Activity {
             imgBitmap = ps.image;
         }
         catch (Exception e) {
-
+            e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Picture error!",Toast.LENGTH_SHORT).show();
         }
 

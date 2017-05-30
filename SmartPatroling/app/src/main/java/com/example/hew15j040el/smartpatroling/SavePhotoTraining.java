@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -46,7 +47,7 @@ public class SavePhotoTraining extends Activity {
 
 
 
-    //    Context context = null;
+    Context context = null;
     Bitmap bitmap = null;
     Bitmap bmpGrayscale=null;
     Bitmap rotatedBitmap=null;
@@ -69,6 +70,8 @@ public class SavePhotoTraining extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.save_photo_training);
+
+        context = this;
 
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         //aprire la fotocamera
@@ -314,7 +317,7 @@ public class SavePhotoTraining extends Activity {
         }
         else
         {
-            Toast.makeText(getApplicationContext(), "Picture saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Picture saved", Toast.LENGTH_SHORT).show();
         }
 
         fileUri = Uri.fromFile(to); //percorso del file rinominato

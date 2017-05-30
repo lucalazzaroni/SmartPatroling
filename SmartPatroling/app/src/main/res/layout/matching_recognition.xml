@@ -16,7 +16,6 @@
             android:layout_marginTop="0dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/falco"
             android:layout_weight="0.50" />
 
         <ImageView
