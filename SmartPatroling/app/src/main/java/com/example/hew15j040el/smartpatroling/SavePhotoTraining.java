@@ -10,6 +10,7 @@ import java.io.IOException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -272,7 +273,7 @@ public class SavePhotoTraining extends Activity {
 //        height = bmpOriginal.getHeight();
 //        width = bmpOriginal.getWidth();
 
-        bmpGrayscale = Bitmap.createBitmap(360, 360, Bitmap.Config.RGB_565);
+        bmpGrayscale = Bitmap.createBitmap(360, 360, Bitmap.Config.ARGB_8888);
         c = new Canvas(bmpGrayscale);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
@@ -343,6 +344,18 @@ public class SavePhotoTraining extends Activity {
         }
         return true;
     }
+
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            Toast.makeText(this, "Picture saved", Toast.LENGTH_SHORT).show();
+//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+//            Toast.makeText(this, "Picture saved", Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
 
     @Override
     protected void onStop() {

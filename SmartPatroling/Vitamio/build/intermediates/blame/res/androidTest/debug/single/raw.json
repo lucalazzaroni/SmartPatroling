@@ -4,6 +4,10 @@
         "source": "C:\\SmartPatroling\\SmartPatroling\\Vitamio\\build\\intermediates\\bundles\\debug\\res\\raw\\libarm.so"
     },
     {
+        "merged": "C:\\Users\\francesco\\AndroidStudioProjects\\SmartPatroling\\SmartPatroling\\Vitamio\\build\\intermediates\\res\\merged\\androidTest\\debug\\raw\\libarm.so",
+        "source": "C:\\Users\\francesco\\AndroidStudioProjects\\SmartPatroling\\SmartPatroling\\Vitamio\\build\\intermediates\\bundles\\debug\\res\\raw\\libarm.so"
+    },
+    {
         "merged": "C:\\SmartPatroling\\Vitamio\\build\\intermediates\\res\\merged\\androidTest\\debug\\raw\\libarm.so",
         "source": "C:\\SmartPatroling\\Vitamio\\build\\intermediates\\bundles\\debug\\res\\raw\\libarm.so"
     }

@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:background="#00c4ff"
+        android:textColor="#FFFFFF"
+        android:background="#09063e"
         android:text = "How to use..."/>
 
     <TextView

@@ -41,7 +41,8 @@
         android:id="@+id/bttswipe"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#020727"
+        android:background="#09063e"
+        android:textColor="#FFFFFF"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"/>
 </RelativeLayout>

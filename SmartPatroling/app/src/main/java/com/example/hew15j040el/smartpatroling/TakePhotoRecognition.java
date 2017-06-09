@@ -4,13 +4,24 @@ import android.content.Context;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
@@ -63,6 +74,11 @@ public class TakePhotoRecognition extends Activity {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "setOnClickListener");
+
+//trasforma la foto in memoria "/Pictures/Drone Pictures/Fakebianconero.jpeg" in una ritagliata e in buianco e nero
+//                FakePhotoDrone();
+
+
                 capturePhoto(null);
                 Intent imr = new Intent(getApplicationContext(), MatchingRecognition.class);
 
@@ -99,6 +115,54 @@ public class TakePhotoRecognition extends Activity {
             bm=null;
         }
     }
+
+
+
+
+    //////////////////////////////////////////////////
+    public void FakePhotoDrone(){
+        //recupero immagine scattata col drone dalla memoria
+        Bitmap daMemoria= BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()+"/Pictures/Drone Pictures/Fakebianconero.jpeg");
+
+        Bitmap bwImage = toGreyScale(daMemoria);
+        try {
+            File bnFile;
+            String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + "Drone Pictures BW" + "/"+ "Fakebianconero" + ".jpeg";
+            bnFile = new File(_bnPath);
+            FileOutputStream fosBw = new FileOutputStream(bnFile);
+            bwImage.compress(Bitmap.CompressFormat.JPEG, 100, fosBw);
+            fosBw.close();
+            recylingBitmap(bwImage);
+        }
+        catch (FileNotFoundException fnfe)
+        {
+            fnfe.printStackTrace();
+        }
+        catch (IOException ioe)
+        {
+            ioe.printStackTrace();
+        }
+
+    }
+    public Bitmap toGreyScale(Bitmap bmpOriginal){
+        Bitmap bmpGrayscale = Bitmap.createBitmap(360, 360,Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmpGrayscale);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(bmpOriginal, new Rect(140,0,500,360),new Rect(0,0,360,360), paint);
+
+        //bmpGrayscale.setPixel(0,0, bmpOriginal.getPixel(0,0)    );
+
+        // recyclingCanvas(c);
+
+        return bmpGrayscale;
+    }
+    /////////////////////////////////////////////////
+
+
 }
 
 

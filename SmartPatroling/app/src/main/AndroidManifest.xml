@@ -36,7 +36,16 @@
         </activity>
 
         <activity android:windowSoftInputMode="adjustResize"
-            android:name=".SavePhotoTraining">
+            android:name=".SavePhotoTraining"
+
+
+
+
+            android:configChanges="orientation|screenSize">
+
+
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />

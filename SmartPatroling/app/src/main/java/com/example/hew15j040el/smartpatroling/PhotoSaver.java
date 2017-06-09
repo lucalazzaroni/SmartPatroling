@@ -87,7 +87,7 @@ public class PhotoSaver {
                     bnFile = new File(_bnPath);
                     FileOutputStream fosBw = new FileOutputStream(bnFile);
                     bwImage.compress(Bitmap.CompressFormat.JPEG, 100, fosBw);
-                    fos.close();
+                    fosBw.close();
                     recylingBitmap(bwImage);
                 }
                 catch (FileNotFoundException fnfe)
@@ -163,7 +163,7 @@ public class PhotoSaver {
     }
 
     public Bitmap toGreyScale(Bitmap bmpOriginal){
-        bmpGrayscale = Bitmap.createBitmap(360, 360, bmpOriginal.getConfig());
+        bmpGrayscale = Bitmap.createBitmap(360, 360,Bitmap.Config.ARGB_8888);
         c = new Canvas(bmpGrayscale);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
