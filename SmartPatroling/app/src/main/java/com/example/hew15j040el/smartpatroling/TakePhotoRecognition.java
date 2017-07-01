@@ -89,7 +89,7 @@ public class TakePhotoRecognition extends Activity {
                     imr.putExtra("imageByteArray", stream.toByteArray());
                 }
 
-                recylingBitmap(imgBitmap);
+
                 startActivity(imr);
             }
         });
@@ -106,6 +106,12 @@ public class TakePhotoRecognition extends Activity {
             Toast.makeText(getApplicationContext(), "Picture error!",Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        recylingBitmap(imgBitmap);
     }
 
     public void recylingBitmap (Bitmap bm)

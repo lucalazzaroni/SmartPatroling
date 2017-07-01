@@ -21,34 +21,56 @@ import io.vov.vitamio.utils.Base64;
  */
 
 public class Algorithm extends Activity {
-    int numberOfImages= new File(Environment.getExternalStorageDirectory()+"/Pictures/Smart Patroling/").listFiles().length;
 
-    static final File dir = new File("Smart Patroling");
+    private static final String IMAGE_BW_DIRECTORY_NAME = "Smart Patroling BW";
+    private int numberOfImages = new File(Environment.getExternalStorageDirectory()+"/Pictures/" + IMAGE_BW_DIRECTORY_NAME).listFiles().length;
+    private static final int RES = 129600;
+    private String[] fileNames = new File(Environment.getExternalStorageDirectory()+ "/Pictures/" + IMAGE_BW_DIRECTORY_NAME).list();
+    private byte[][] matrixOfImages = new byte[RES][numberOfImages];
+    private byte[] imageArray = new byte [RES];
     // array of supported extensions (use a List if you prefer)
-    static final String[] EXTENSIONS = new String[]
-            {
-                    "JPEG"
-            };
+//    static final String[] EXTENSIONS = new String[]
+//            {
+//                    "JPEG"
+//            };
     // filter to identify images based on their extensions
-    static final FilenameFilter IMAGE_FILTER = new FilenameFilter(){
-        @Override
-        public boolean accept(final File dir, final String name) {
-            for (final String ext : EXTENSIONS) {
-                if (name.endsWith("." + ext)) {
-                    return (true);
-                }
+//    static final FilenameFilter IMAGE_FILTER = new FilenameFilter(){
+//        @Override
+//        public boolean accept(final File dir, final String name) {
+//            for (final String ext : EXTENSIONS) {
+//                if (name.endsWith("." + ext)) {
+//                    return (true);
+//                }
+//            }
+//            return (false);
+//        }
+//    };
+
+    public void Detection()
+    {
+        for(int i = 0; i < numberOfImages; i++)
+        {
+            //trasformo tutte le immagini in array
+            imageArray = FromJpegToArray (Environment.getExternalStorageDirectory()+ "/Pictures/" + IMAGE_BW_DIRECTORY_NAME + "/" + fileNames[i]);
+
+            for(int j = 0; j < RES; j++)
+            {
+                matrixOfImages[j][i] = imageArray [j];
             }
-            return (false);
+            imageArray = null;
         }
-    };
+    }
+
+
+
     //convertire JPEG in bitmap
 
     public Bitmap FromJpegToBitmap(String _writename)
     {
-        File root= Environment.getExternalStorageDirectory();
-        Bitmap bm=BitmapFactory.decodeFile(root+"/Smart Patroling/"+ _writename);
-        return bm;
+        File root = Environment.getExternalStorageDirectory();
+        return BitmapFactory.decodeFile(root+"/Smart Patroling/"+ _writename);
     }
+
     //convertire la bitmap in un array
 
     public byte[] FromBitmapToArray(Bitmap bmp)
@@ -59,13 +81,23 @@ public class Algorithm extends Activity {
         return byteArray;
     }
 
+    //convertire da jpeg a array
+
+    public byte[] FromJpegToArray (String _filepath)
+    {
+        File root = Environment.getExternalStorageDirectory();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        BitmapFactory.decodeFile (_filepath).compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
+
     public int[] AverageImage(byte[][] images )
     {
-        int[] avgImage=new int[129600];
-        int[] sumImage=new int[129600];
+        int[] avgImage=new int[RES];
+        int[] sumImage=new int[RES];
         for(int i=0;i<numberOfImages;i++)
         {
-            for(int j=0;j<129600;j++)
+            for(int j=0;j<RES;j++)
             {
                 sumImage[j] += images[j][i];
             }
@@ -77,21 +109,23 @@ public class Algorithm extends Activity {
     }
 
     public int[][] EigenImage(byte[][] images ,int[] avg) {
-        int[][] eigen = new int[129600][numberOfImages];
+        int[][] eigen = new int[RES][numberOfImages];
 
         for (int i = 0; i < numberOfImages; i++) {
-            for(int j=0;j<129600;j++) {
+            for(int j=0;j<RES;j++) {
                 eigen[j][i]= images[j][i]-avg[j];
             }
         }
         return eigen;
     }
 
+    //matrice di covarianza
+
     public int[][] Covarianza(int[][] eigen){
-        int[][] covarianza=new int[129600][129600];
+        int[][] covarianza=new int[RES][RES];
         //traspongo eigen
         int[][] eigenT=transposeMatrix(eigen);
-        for (int i = 0; i < 129600; i++)
+        for (int i = 0; i < RES; i++)
             for (int j = 0; j < numberOfImages; j++)
                 for (int k = 0; k < numberOfImages; k++)
                     covarianza[i][j] += eigen[i][k] * eigenT[k][j];

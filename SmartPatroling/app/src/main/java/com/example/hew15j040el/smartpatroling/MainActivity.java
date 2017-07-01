@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                Algorithm al = new Algorithm();
+                al.Detection();
                 Intent itpt = new Intent(getApplicationContext(),SavePhotoTraining.class);
                 startActivity(itpt);
             }
