@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Scanner;
 
 import io.vov.vitamio.utils.Base64;
+import  Jama.*;
+import  Jama.EigenvalueDecomposition;
+import Jama.Matrix;
 
 
 /**
@@ -51,14 +54,14 @@ public class Algorithm extends Activity {
         for(int i = 0; i < numberOfImages; i++)
         {
             //trasformo tutte le immagini in array
-            imageArray = FromJpegToArray (Environment.getExternalStorageDirectory()+ "/Pictures/" + IMAGE_BW_DIRECTORY_NAME + "/" + fileNames[i]);
+            FromJpegToArray (Environment.getExternalStorageDirectory()+ "/Pictures/" + IMAGE_BW_DIRECTORY_NAME + "/" + fileNames[i]);
 
             for(int j = 0; j < RES; j++)
             {
                 matrixOfImages[j][i] = imageArray [j];
             }
-            imageArray = null;
         }
+
     }
 
 
@@ -75,35 +78,37 @@ public class Algorithm extends Activity {
 
     public byte[] FromBitmapToArray(Bitmap bmp)
     {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-        return byteArray;
+        for (int r=0;r<360;r++)
+        {
+            for(int c=0;c<360;c++)
+            {
+                imageArray[c] = (byte)(bmp.getPixel(c,r) & 0x000000FF); //maschera per considerare un solo byte tanto R G e B sono uguali essendo immagine in b/n
+            }
+        }
+        return imageArray;
     }
 
     //convertire da jpeg a array
 
-    public byte[] FromJpegToArray (String _filepath)
+    public void FromJpegToArray (String _filepath)
     {
-        File root = Environment.getExternalStorageDirectory();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        BitmapFactory.decodeFile (_filepath).compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
+        FromBitmapToArray (BitmapFactory.decodeFile (_filepath));
     }
 
-    public int[] AverageImage(byte[][] images )
+
+    public byte[] AverageImage(byte[][] images )
     {
-        int[] avgImage=new int[RES];
+        byte[] avgImage=new byte[RES];
         int[] sumImage=new int[RES];
-        for(int i=0;i<numberOfImages;i++)
+        for(int i = 0; i < numberOfImages; i++)
         {
-            for(int j=0;j<RES;j++)
+            for(int j = 0; j < RES; j++)
             {
                 sumImage[j] += images[j][i];
             }
         }
-        for(int k=0;k<sumImage.length;k++) {
-            avgImage[k] = sumImage[k] / numberOfImages;
+        for(int k = 0; k < RES; k++) {
+            avgImage[k] = (byte)(sumImage[k] / numberOfImages);
         }
         return avgImage;
     }
@@ -119,28 +124,86 @@ public class Algorithm extends Activity {
         return eigen;
     }
 
-    //matrice di covarianza
+    //matrice di covarianza A'A
 
-    public int[][] Covarianza(int[][] eigen){
-        int[][] covarianza=new int[RES][RES];
+    public int[][] Covariance(byte[][] imagesLessMean)
+    {
+        int[][] cov = new int[numberOfImages][numberOfImages];
+
         //traspongo eigen
-        int[][] eigenT=transposeMatrix(eigen);
-        for (int i = 0; i < RES; i++)
+//        byte[][] eigenT = transposeMatrix(imagesLessMean);
+
+        for (int i = 0; i < numberOfImages; i++)
             for (int j = 0; j < numberOfImages; j++)
-                for (int k = 0; k < numberOfImages; k++)
-                    covarianza[i][j] += eigen[i][k] * eigenT[k][j];
-        for(int i=0;i<covarianza.length;i++)
-            for(int j=0;j<covarianza.length;j++)
-                covarianza[i][j]=covarianza[i][j] / numberOfImages;
+                for (int k = 0; k < RES; k++)
+                    cov[i][j] += imagesLessMean[k][i] * imagesLessMean[k][j];
+        for (int i = 0; i < cov.length; i++)
+            for(int j = 0; j < cov.length; j++)
+                cov[i][j] = cov[i][j] / numberOfImages;
 
-        return covarianza;
+        return cov;
     }
 
-    public static int[][] transposeMatrix(int [][] m){
-        int[][] temp = new int[m[0].length][m.length];
-        for (int i = 0; i < m.length; i++)
-            for (int j = 0; j < m[0].length; j++)
-                temp[j][i] = m[i][j];
-        return temp;
+    public double[][] FindSignificantEigenVectors(double[][] covarM)
+    {
+        Matrix cov = new Matrix(covarM);
+        EigenvalueDecomposition E = cov.eig();
+        double[] eigValue = Diag(E.getD().getArray());
+        double[][] eigVector = E.getV().getArray();
+        BubbleSort(eigValue);
+        double eigSum = 0;
+        for(int i = 0; i < eigValue.length; i++)
+        {
+            eigSum += eigValue[i];
+        }
+        double percentage = 0;
+        double partialEigSum = 0;
+        int eigCount = 0;
+        while(percentage < 0.85)
+        {
+            partialEigSum += eigValue[eigCount++];
+            percentage = partialEigSum / eigSum;
+        }
+        return  null;
     }
+
+    static double[] Diag(double[][] m) {
+
+        double[] d = new double[m.length];
+        for (int i = 0; i< m.length; i++)
+            d[i] = m[i][i];
+        return d;
+    }
+
+    public void BubbleSort(double [] array) {
+
+        for(int i = 0; i < array.length; i++)
+        {
+            boolean flag = false;
+            for(int j = 0; j < array.length-1; j++)
+            {
+                //Se l' elemento j e minore del successivo allora
+                //scambiamo i valori
+                if(array[j]<array[j+1]) {
+                    double k = array[j];
+                    array[j] = array[j+1];
+                    array[j+1] = k;
+                    flag=true; //Lo setto a true per indicare che é avvenuto uno scambio
+                }
+            }
+            if(!flag) break; //Se flag=false allora vuol dire che nell' ultima iterazione
+            //non ci sono stati scambi, quindi il metodo può terminare
+            //poiché l' array risulta ordinato
+        }
+    }
+//
+//    public static byte[][] transposeMatrix(byte [][] m)
+//    {
+//        byte[][] temp = new byte[m[0].length][m.length];
+//        for (int i = 0; i < m.length; i++)
+//            for (int j = 0; j < m[0].length; j++)
+//                temp[j][i] = m[i][j];
+//        return temp;
+//    }
 }
+
