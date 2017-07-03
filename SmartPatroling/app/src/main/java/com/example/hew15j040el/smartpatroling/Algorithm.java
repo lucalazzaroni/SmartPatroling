@@ -4,17 +4,9 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.provider.MediaStore;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.util.List;
-import java.util.Scanner;
 
-import io.vov.vitamio.utils.Base64;
-import  Jama.*;
 import  Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 
@@ -61,6 +53,14 @@ public class Algorithm extends Activity {
                 matrixOfImages[j][i] = imageArray [j];
             }
         }
+        //calcolo la matrice media
+        byte[] avgImg = AverageImage(matrixOfImages);
+        //sottraggo la media
+        SubtractMean(matrixOfImages, avgImg);
+        //calcolo matrice di covarianza
+        double[][] cov = Covariance(matrixOfImages);
+        //calcolo autovettori associati agli autovalori più significativi
+        double[][] sigEigVector = FindSignificantEigenVectors(cov);
 
     }
 
@@ -68,11 +68,11 @@ public class Algorithm extends Activity {
 
     //convertire JPEG in bitmap
 
-    public Bitmap FromJpegToBitmap(String _writename)
-    {
-        File root = Environment.getExternalStorageDirectory();
-        return BitmapFactory.decodeFile(root+"/Smart Patroling/"+ _writename);
-    }
+//    public Bitmap FromJpegToBitmap(String _writename)
+//    {
+//        File root = Environment.getExternalStorageDirectory();
+//        return BitmapFactory.decodeFile(root+"/Smart Patroling/"+ _writename);
+//    }
 
     //convertire la bitmap in un array
 
@@ -96,15 +96,15 @@ public class Algorithm extends Activity {
     }
 
 
-    public byte[] AverageImage(byte[][] images )
+    public byte[] AverageImage(byte[][] images)
     {
         byte[] avgImage=new byte[RES];
         int[] sumImage=new int[RES];
-        for(int i = 0; i < numberOfImages; i++)
+        for(int row = 0; row < RES; row++)
         {
-            for(int j = 0; j < RES; j++)
+            for(int col = 0; col < numberOfImages; col++)
             {
-                sumImage[j] += images[j][i];
+                sumImage[row] += images[row][col];
             }
         }
         for(int k = 0; k < RES; k++) {
@@ -113,25 +113,22 @@ public class Algorithm extends Activity {
         return avgImage;
     }
 
-    public int[][] EigenImage(byte[][] images ,int[] avg) {
-        int[][] eigen = new int[RES][numberOfImages];
-
-        for (int i = 0; i < numberOfImages; i++) {
-            for(int j=0;j<RES;j++) {
-                eigen[j][i]= images[j][i]-avg[j];
+    public void SubtractMean(byte[][] images ,byte[] avg)
+    {
+        for (int i = 0; i < numberOfImages; i++)
+        {
+            for(int j=0;j<RES;j++)
+            {
+                images[j][i]= (byte) (images[j][i]-avg[j]);
             }
         }
-        return eigen;
     }
 
     //matrice di covarianza A'A
 
-    public int[][] Covariance(byte[][] imagesLessMean)
+    public double[][] Covariance(byte[][] imagesLessMean)
     {
-        int[][] cov = new int[numberOfImages][numberOfImages];
-
-        //traspongo eigen
-//        byte[][] eigenT = transposeMatrix(imagesLessMean);
+        double[][] cov = new double[numberOfImages][numberOfImages];
 
         for (int i = 0; i < numberOfImages; i++)
             for (int j = 0; j < numberOfImages; j++)
@@ -150,7 +147,9 @@ public class Algorithm extends Activity {
         EigenvalueDecomposition E = cov.eig();
         double[] eigValue = Diag(E.getD().getArray());
         double[][] eigVector = E.getV().getArray();
-        BubbleSort(eigValue);
+        //Bubblesort mi ordina autovalori e autovettori
+        BubbleSort(eigValue, eigVector);
+
         double eigSum = 0;
         for(int i = 0; i < eigValue.length; i++)
         {
@@ -164,7 +163,16 @@ public class Algorithm extends Activity {
             partialEigSum += eigValue[eigCount++];
             percentage = partialEigSum / eigSum;
         }
-        return  null;
+        double[][] mostSigVectors = new double[eigVector.length][eigCount];
+        for(int i = 0; i < eigVector.length; i++)
+        {
+            for(int j = 0; j < eigCount; j++)
+            {
+                mostSigVectors[i][j] = eigVector[i][j];
+            }
+        }
+
+        return  mostSigVectors;
     }
 
     static double[] Diag(double[][] m) {
@@ -175,19 +183,28 @@ public class Algorithm extends Activity {
         return d;
     }
 
-    public void BubbleSort(double [] array) {
 
-        for(int i = 0; i < array.length; i++)
+    public void BubbleSort(double [] eigValue, double [][] eigVector) {
+        int[] index = new int[numberOfImages];
+        for(int i = 0; i < numberOfImages; i++)
+        {
+            index[i] = i;
+        }
+
+        for(int i = 0; i < eigValue.length; i++)
         {
             boolean flag = false;
-            for(int j = 0; j < array.length-1; j++)
+            for(int j = 0; j < eigValue.length-1; j++)
             {
                 //Se l' elemento j e minore del successivo allora
                 //scambiamo i valori
-                if(array[j]<array[j+1]) {
-                    double k = array[j];
-                    array[j] = array[j+1];
-                    array[j+1] = k;
+                if(eigValue[j]<eigValue[j+1]) {
+                    double k = eigValue[j];
+                    int temp = index[j];
+                    eigValue[j] = eigValue[j+1];
+                    index[j] = index[j+1];
+                    eigValue[j+1] = k;
+                    index[j+1] = temp;
                     flag=true; //Lo setto a true per indicare che é avvenuto uno scambio
                 }
             }
@@ -195,7 +212,20 @@ public class Algorithm extends Activity {
             //non ci sono stati scambi, quindi il metodo può terminare
             //poiché l' array risulta ordinato
         }
+        // ordino gli autovettori in corrispondenza degli autovalori
+        double[][] tempVector = new double[eigVector.length][eigVector[0].length];
+        for(int col = 0; col < eigVector[0].length; col++)
+        {
+            for(int row = 0; row < eigVector.length; row++)
+            {
+                tempVector[row][col] = eigVector[row][index[col]];
+            }
+        }
+        eigVector = tempVector;
+        tempVector = null;
     }
+
+
 //
 //    public static byte[][] transposeMatrix(byte [][] m)
 //    {
