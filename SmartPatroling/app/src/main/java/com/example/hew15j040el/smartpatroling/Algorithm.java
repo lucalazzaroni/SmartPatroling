@@ -21,8 +21,8 @@ public class Algorithm extends Activity {
     private int numberOfImages = new File(Environment.getExternalStorageDirectory()+"/Pictures/" + IMAGE_BW_DIRECTORY_NAME).listFiles().length;
     private static final int RES = 129600;
     private String[] fileNames = new File(Environment.getExternalStorageDirectory()+ "/Pictures/" + IMAGE_BW_DIRECTORY_NAME).list();
-    private byte[][] matrixOfImages = new byte[RES][numberOfImages];
-    private byte[] imageArray = new byte [RES];
+    private int[][] matrixOfImages = new int[RES][numberOfImages];
+    private int[] imageArray = new int [RES];
     // array of supported extensions (use a List if you prefer)
 //    static final String[] EXTENSIONS = new String[]
 //            {
@@ -54,13 +54,14 @@ public class Algorithm extends Activity {
             }
         }
         //calcolo la matrice media
-        byte[] avgImg = AverageImage(matrixOfImages);
+        int[] avgImg = AverageImage(matrixOfImages);
         //sottraggo la media
         SubtractMean(matrixOfImages, avgImg);
         //calcolo matrice di covarianza
         double[][] cov = Covariance(matrixOfImages);
         //calcolo autovettori associati agli autovalori più significativi
         double[][] sigEigVector = FindSignificantEigenVectors(cov);
+
 
     }
 
@@ -76,16 +77,15 @@ public class Algorithm extends Activity {
 
     //convertire la bitmap in un array
 
-    public byte[] FromBitmapToArray(Bitmap bmp)
+    public void FromBitmapToArray(Bitmap bmp)
     {
-        for (int r=0;r<360;r++)
+        for (int r = 0; r < 360; r++)
         {
-            for(int c=0;c<360;c++)
+            for(int c = 0; c < 360; c++)
             {
-                imageArray[c] = (byte)(bmp.getPixel(c,r) & 0x000000FF); //maschera per considerare un solo byte tanto R G e B sono uguali essendo immagine in b/n
+                imageArray[c + 360*r] = bmp.getPixel(c,r) & 0x000000FF; //maschera per considerare un solo byte tanto R G e B sono uguali essendo immagine in b/n
             }
         }
-        return imageArray;
     }
 
     //convertire da jpeg a array
@@ -96,9 +96,9 @@ public class Algorithm extends Activity {
     }
 
 
-    public byte[] AverageImage(byte[][] images)
+    public int[] AverageImage(int[][] images)
     {
-        byte[] avgImage=new byte[RES];
+        int[] avgImage=new int[RES];
         int[] sumImage=new int[RES];
         for(int row = 0; row < RES; row++)
         {
@@ -108,25 +108,25 @@ public class Algorithm extends Activity {
             }
         }
         for(int k = 0; k < RES; k++) {
-            avgImage[k] = (byte)(sumImage[k] / numberOfImages);
+            avgImage[k] = sumImage[k] / numberOfImages;
         }
         return avgImage;
     }
 
-    public void SubtractMean(byte[][] images ,byte[] avg)
+    public void SubtractMean(int[][] images ,int[] avg)
     {
         for (int i = 0; i < numberOfImages; i++)
         {
             for(int j=0;j<RES;j++)
             {
-                images[j][i]= (byte) (images[j][i]-avg[j]);
+                images[j][i]= images[j][i]-avg[j];
             }
         }
     }
 
     //matrice di covarianza A'A
 
-    public double[][] Covariance(byte[][] imagesLessMean)
+    public double[][] Covariance(int[][] imagesLessMean)
     {
         double[][] cov = new double[numberOfImages][numberOfImages];
 
@@ -146,7 +146,7 @@ public class Algorithm extends Activity {
         Matrix cov = new Matrix(covarM);
         EigenvalueDecomposition E = cov.eig();
         double[] eigValue = Diag(E.getD().getArray());
-        double[][] eigVector = E.getV().getArray();
+        double[][] eigVector = E.getV().getArray(); //gli autovettori sono vettori colonna di eigValue
         //Bubblesort mi ordina autovalori e autovettori
         BubbleSort(eigValue, eigVector);
 
@@ -225,7 +225,21 @@ public class Algorithm extends Activity {
         tempVector = null;
     }
 
+    public double[][] ComputeEigenFace(double[][] eigVector, double[][] imageLessMean)
+    {
+        Matrix eigVecM = new Matrix(eigVector);
+        Matrix imgLessMeanM = new Matrix(imageLessMean);
+        return imgLessMeanM.times(eigVecM).getArray();
+    }
 
+    public double[][] ComputeCoeffEigenFace(double[][] eigenFace, double[][] imageLessMean)
+    {
+        //i vettori dei coefficienti di ogni singola immagine sono vettori colonna
+        Matrix eigenfaceM = new Matrix(eigenFace);
+        Matrix imgLessMeanM = new Matrix(imageLessMean);
+        Matrix eigenT = eigenfaceM.transpose();
+        return eigenT.times(imgLessMeanM).getArray();
+    }
 //
 //    public static byte[][] transposeMatrix(byte [][] m)
 //    {

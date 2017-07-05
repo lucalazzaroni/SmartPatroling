@@ -286,7 +286,7 @@ public class SavePhotoTraining extends Activity {
         Matrix rotate = new Matrix();
         rotate.preRotate(90);
         rotatedBitmap=Bitmap.createBitmap(bmpOriginal,0,0,bmpOriginal.getWidth(),bmpOriginal.getHeight(),rotate,true);
-        canvas= new Canvas(rotatedBitmap);
+        canvas  = new Canvas(rotatedBitmap);
         canvas.drawBitmap(bmpOriginal,new Rect(0,0,1600,1200), new Rect(), null);
 
         //funziona per l immagine girata a sx rispetto ad una dritta
