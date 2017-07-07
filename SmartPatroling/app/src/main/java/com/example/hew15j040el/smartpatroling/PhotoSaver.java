@@ -32,20 +32,19 @@ import io.vov.vitamio.MediaPlayer;
 
  */
 public class PhotoSaver {
-    String filename;
-    String finalname;
-    Bitmap image=null;
-    Bitmap bwImage =null;
-    Bitmap bmpGrayscale=null;
-    Canvas c=null;
-    Calendar rightNow;
+//    String filename;
+//    String finalname;
+//    Bitmap image=null;
+//    Bitmap bwImage =null;
+
+//    Calendar rightNow;
     MediaPlayer mMediaPlayer;
     Context context;
-    String imgname = null;
-    private static final String DRONE_DIRECTORY_NAME = "Drone Pictures";
-    private static final String DRONE_BW_DIRECTORY_NAME = "Drone Pictures BW";
-    private File mediaStorageDir;
-    private File mediaStorageDirBW;
+//    String imgname = null;
+//    private static final String DRONE_DIRECTORY_NAME = "Drone Pictures";
+//    private static final String DRONE_BW_DIRECTORY_NAME = "Drone Pictures BW";
+//    private File mediaStorageDir;
+//    private File mediaStorageDirBW;
 
 
 //    public String getImgname()
@@ -57,8 +56,8 @@ public class PhotoSaver {
     public PhotoSaver(Context c, MediaPlayer m){
         this.context = c ;
         this.mMediaPlayer = m ;
-        rightNow = Calendar.getInstance();
-        filename = rightNow.get(Calendar.DAY_OF_MONTH)+"_"+(rightNow.get(Calendar.MONTH)+1)+"_"+rightNow.get(Calendar.YEAR);
+//        rightNow = Calendar.getInstance();
+//        filename = rightNow.get(Calendar.DAY_OF_MONTH)+"_"+(rightNow.get(Calendar.MONTH)+1)+"_"+rightNow.get(Calendar.YEAR);
 
     }
 
@@ -70,50 +69,52 @@ public class PhotoSaver {
      the PNG format.
 
      */
-    public String record(){
+    public Bitmap record(){
         if(Environment.getExternalStorageState() != null){
-            try{
+//            try{
 
-                image = mMediaPlayer.getCurrentFrame(); //scatta la foto
-                File picture = getOutputMediaFile(); //crea le due directory per foto a colori e BW e un file vuoto dove salvare l'immagine a colori
-                FileOutputStream fos = new FileOutputStream(picture);
-                image.compress(Bitmap.CompressFormat.JPEG, 100, fos); //salva la foto a colori
-                fos.close();
+                return mMediaPlayer.getCurrentFrame(); //scatta la foto
+//                File picture = getOutputMediaFile(); //crea le due directory per foto a colori e BW e un file vuoto dove salvare l'immagine a colori
+//                FileOutputStream fos = new FileOutputStream(picture);
+//                image.compress(Bitmap.CompressFormat.JPEG, 100, fos); //salva la foto a colori
+//                fos.close();
 
-                bwImage = toGreyScale(image);
-                try {
-                    File bnFile;
-                    String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + DRONE_BW_DIRECTORY_NAME + "/"+ finalname + ".jpeg";
-                    bnFile = new File(_bnPath);
-                    FileOutputStream fosBw = new FileOutputStream(bnFile);
-                    bwImage.compress(Bitmap.CompressFormat.JPEG, 100, fosBw);
-                    fosBw.close();
-                    recylingBitmap(bwImage);
-                }
-                catch (FileNotFoundException fnfe)
-                {
-                    fnfe.printStackTrace();
-                }
-                catch (IOException ioe)
-                {
-                    ioe.printStackTrace();
-                }
-
-                Toast.makeText(context, "Picture saved in :" + imgname , Toast.LENGTH_SHORT).show();
-
-            } catch(FileNotFoundException e){
-                Toast.makeText(context, "Picture file creation failed" , Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(context, "Unable to create picture file" , Toast.LENGTH_SHORT).show();
-            }
-        }else{
-            Toast.makeText(context, "Internal memory not available" , Toast.LENGTH_SHORT).show();
+//                bwImage = toGreyScale(image);
+//                try {
+//                    File bnFile;
+//                    String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + DRONE_BW_DIRECTORY_NAME + "/"+ finalname + ".jpeg";
+//                    bnFile = new File(_bnPath);
+//                    FileOutputStream fosBw = new FileOutputStream(bnFile);
+//                    bwImage.compress(Bitmap.CompressFormat.JPEG, 100, fosBw);
+//                    fosBw.close();
+//                    recylingBitmap(bwImage);
+//                }
+//                catch (FileNotFoundException fnfe)
+//                {
+//                    fnfe.printStackTrace();
+//                }
+//                catch (IOException ioe)
+//                {
+//                    ioe.printStackTrace();
+//                }
+//
+//                Toast.makeText(context, "Picture saved in :" + imgname , Toast.LENGTH_SHORT).show();
+//
+//            } catch(FileNotFoundException e){
+//                Toast.makeText(context, "Picture file creation failed" , Toast.LENGTH_SHORT).show();
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                Toast.makeText(context, "Unable to create picture file" , Toast.LENGTH_SHORT).show();
+//            }
+//        }else{
+//            Toast.makeText(context, "Internal memory not available" , Toast.LENGTH_SHORT).show();
         }
 //        recylingBitmap(image);
-        return imgname;
+//        return imgname;
+        return null;
     }
+
 
 
     /**
@@ -124,75 +125,60 @@ public class PhotoSaver {
      * @return the File to be used.
 
      */
-    private  File getOutputMediaFile() {
-
-        mediaStorageDir = new File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                DRONE_DIRECTORY_NAME);
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d(DRONE_DIRECTORY_NAME, "Oops! Failed to create "
-                        + DRONE_DIRECTORY_NAME + " directory");
-                return null;
-            }
-        }
-
-        //creazione cartella per foto BW
-        mediaStorageDirBW = new File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                DRONE_BW_DIRECTORY_NAME);
-
-        if (!mediaStorageDirBW.exists()) {
-            if (!mediaStorageDirBW.mkdirs()) {
-                Log.d(DRONE_BW_DIRECTORY_NAME, "Oops! Failed to create "
-                        + DRONE_BW_DIRECTORY_NAME + " directory");
-                return null;
-            }
-        }
-
-            rightNow = Calendar.getInstance();
-            finalname = "DronePicture_" + rightNow.get(Calendar.HOUR) + ":" + rightNow.get(Calendar.MINUTE) + ":" + rightNow.get(Calendar.SECOND) + "_" + filename;
-            //Create a media file name
-            File mediaFile;
-            imgname = Environment.getExternalStorageDirectory() + "/Pictures/" + DRONE_DIRECTORY_NAME + "/" + finalname + ".jpeg";
-
-            mediaFile = new File(imgname);
-            return mediaFile;
-    }
-
-    public Bitmap toGreyScale(Bitmap bmpOriginal){
-        bmpGrayscale = Bitmap.createBitmap(360, 360,Bitmap.Config.ARGB_8888);
-        c = new Canvas(bmpGrayscale);
-        Paint paint = new Paint();
-        ColorMatrix cm = new ColorMatrix();
-        cm.setSaturation(0);
-        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
-        paint.setColorFilter(f);
-        c.drawBitmap(bmpOriginal, new Rect(140,0,500,360),new Rect(0,0,360,360), paint);
-
-        //bmpGrayscale.setPixel(0,0, bmpOriginal.getPixel(0,0)    );
-
-        // recyclingCanvas(c);
-
-        return bmpGrayscale;
-    }
+//    private  File getOutputMediaFile() {
+//
+//        mediaStorageDir = new File(
+//                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+//                DRONE_DIRECTORY_NAME);
+//
+//        // Create the storage directory if it does not exist
+//        if (!mediaStorageDir.exists()) {
+//            if (!mediaStorageDir.mkdirs()) {
+//                Log.d(DRONE_DIRECTORY_NAME, "Oops! Failed to create "
+//                        + DRONE_DIRECTORY_NAME + " directory");
+//                return null;
+//            }
+//        }
+//
+//        //creazione cartella per foto BW
+//        mediaStorageDirBW = new File(
+//                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+//                DRONE_BW_DIRECTORY_NAME);
+//
+//        if (!mediaStorageDirBW.exists()) {
+//            if (!mediaStorageDirBW.mkdirs()) {
+//                Log.d(DRONE_BW_DIRECTORY_NAME, "Oops! Failed to create "
+//                        + DRONE_BW_DIRECTORY_NAME + " directory");
+//                return null;
+//            }
+//        }
+//
+//            rightNow = Calendar.getInstance();
+//            finalname = "DronePicture_" + rightNow.get(Calendar.HOUR) + ":" + rightNow.get(Calendar.MINUTE) + ":" + rightNow.get(Calendar.SECOND) + "_" + filename;
+//            //Create a media file name
+//            File mediaFile;
+//            imgname = Environment.getExternalStorageDirectory() + "/Pictures/" + DRONE_DIRECTORY_NAME + "/" + finalname + ".jpeg";
+//
+//            mediaFile = new File(imgname);
+//            return mediaFile;
+//    }
 
 
-    public void recylingBitmap (Bitmap bm)
-    {
-        if(bm!=null){
-            bm.recycle();
-            bm=null;
-        }
-    }
-    public void recyclingCanvas(Canvas cv)
-    {
-        if (cv != null) {
-            cv.setBitmap(null);
-            cv = null;
-        }
-    }
+
+//
+//    public void recylingBitmap (Bitmap bm)
+//    {
+//        if(bm!=null){
+//            bm.recycle();
+//            bm=null;
+//        }
+//    }
+//    public void recyclingCanvas(Canvas cv)
+//    {
+//        if (cv != null) {
+//            cv.setBitmap(null);
+//            cv = null;
+//        }
+//    }
 
 }

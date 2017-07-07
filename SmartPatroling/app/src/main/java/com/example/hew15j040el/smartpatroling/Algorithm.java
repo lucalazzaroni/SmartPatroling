@@ -21,8 +21,11 @@ public class Algorithm extends Activity {
     private int numberOfImages = new File(Environment.getExternalStorageDirectory()+"/Pictures/" + IMAGE_BW_DIRECTORY_NAME).listFiles().length;
     private static final int RES = 129600;
     private String[] fileNames = new File(Environment.getExternalStorageDirectory()+ "/Pictures/" + IMAGE_BW_DIRECTORY_NAME).list();
-    private int[][] matrixOfImages = new int[RES][numberOfImages];
-    private int[] imageArray = new int [RES];
+    private double[][] matrixOfImages = new double[RES][numberOfImages];
+    private double[] imageArray = new double[RES];
+    private double[][] coeffEigFace;
+    private double[] avgImg;
+    private double[][] eigenFace;
     // array of supported extensions (use a List if you prefer)
 //    static final String[] EXTENSIONS = new String[]
 //            {
@@ -41,7 +44,7 @@ public class Algorithm extends Activity {
 //        }
 //    };
 
-    public void Detection()
+    public void Detection(float percentage)
     {
         for(int i = 0; i < numberOfImages; i++)
         {
@@ -54,26 +57,50 @@ public class Algorithm extends Activity {
             }
         }
         //calcolo la matrice media
-        int[] avgImg = AverageImage(matrixOfImages);
+        avgImg = AverageImage(matrixOfImages);
         //sottraggo la media
-        SubtractMean(matrixOfImages, avgImg);
+        SubtractMeanOfAllImages(matrixOfImages, avgImg);
         //calcolo matrice di covarianza
         double[][] cov = Covariance(matrixOfImages);
         //calcolo autovettori associati agli autovalori più significativi
-        double[][] sigEigVector = FindSignificantEigenVectors(cov);
+        double[][] sigEigVector = FindSignificantEigenVectors(cov, percentage);
+        cov = null;
+        //calcolo autofacce associate alle immagini
+        eigenFace = ComputeEigenFace(sigEigVector, matrixOfImages);
+        ////////////////////////////////////////////////////////////////////////////////////
 
+        ////////////////////////////////////////////////////////////////////////////////////
+        sigEigVector = null;
+        //calcolo coefficienti associati alle immagini
+        coeffEigFace = ComputeCoeffEigenFaceOfAllImages(eigenFace, matrixOfImages);
+    }
 
+    public String Recognize(double threshold, Bitmap bmpGreyScale)
+    {
+        //metto immagine b/n in un array
+        FromBitmapToArray(bmpGreyScale);
+        recylingBitmap(bmpGreyScale);
+        //sottraggo la media delle immagini nel database all'immagine
+        SubtractMean(imageArray, avgImg);
+        avgImg = null;
+        //calcolo coefficienti associati all'immagine
+        double[] coeff = ComputeCoeffEigenFace(eigenFace, imageArray);
+        eigenFace = null;
+        imageArray = null;
+        int index = FindMinEuclideanDistance(coeff, coeffEigFace, threshold);
+        coeff = null;
+        coeffEigFace = null;
+        if(index != -1)
+        {
+            return fileNames[index];
+        }
+        else
+            return null;
     }
 
 
 
-    //convertire JPEG in bitmap
 
-//    public Bitmap FromJpegToBitmap(String _writename)
-//    {
-//        File root = Environment.getExternalStorageDirectory();
-//        return BitmapFactory.decodeFile(root+"/Smart Patroling/"+ _writename);
-//    }
 
     //convertire la bitmap in un array
 
@@ -96,10 +123,10 @@ public class Algorithm extends Activity {
     }
 
 
-    public int[] AverageImage(int[][] images)
+    public double[] AverageImage(double[][] images)
     {
-        int[] avgImage=new int[RES];
-        int[] sumImage=new int[RES];
+        double[] avgImage=new double[RES];
+        double[] sumImage=new double[RES];
         for(int row = 0; row < RES; row++)
         {
             for(int col = 0; col < numberOfImages; col++)
@@ -110,23 +137,32 @@ public class Algorithm extends Activity {
         for(int k = 0; k < RES; k++) {
             avgImage[k] = sumImage[k] / numberOfImages;
         }
+        sumImage = null;
         return avgImage;
     }
 
-    public void SubtractMean(int[][] images ,int[] avg)
+    public void SubtractMeanOfAllImages(double[][] images, double[] avg)
     {
         for (int i = 0; i < numberOfImages; i++)
         {
-            for(int j=0;j<RES;j++)
+            for(int j = 0; j < RES; j++)
             {
                 images[j][i]= images[j][i]-avg[j];
             }
         }
     }
 
+    public void SubtractMean(double[] singleImg, double[] avg)
+    {
+        for(int j=0;j<RES;j++)
+        {
+            singleImg[j]= singleImg[j]-avg[j];
+        }
+    }
+
     //matrice di covarianza A'A
 
-    public double[][] Covariance(int[][] imagesLessMean)
+    public double[][] Covariance(double[][] imagesLessMean)
     {
         double[][] cov = new double[numberOfImages][numberOfImages];
 
@@ -135,43 +171,46 @@ public class Algorithm extends Activity {
                 for (int k = 0; k < RES; k++)
                     cov[i][j] += imagesLessMean[k][i] * imagesLessMean[k][j];
         for (int i = 0; i < cov.length; i++)
-            for(int j = 0; j < cov.length; j++)
+            for(int j = 0; j < cov[0].length; j++)
                 cov[i][j] = cov[i][j] / numberOfImages;
 
         return cov;
     }
 
-    public double[][] FindSignificantEigenVectors(double[][] covarM)
+    public double[][] FindSignificantEigenVectors(double[][] covarM, float chosenPercentage)
     {
         Matrix cov = new Matrix(covarM);
         EigenvalueDecomposition E = cov.eig();
+        cov = null;
         double[] eigValue = Diag(E.getD().getArray());
         double[][] eigVector = E.getV().getArray(); //gli autovettori sono vettori colonna di eigValue
+        E = null;
         //Bubblesort mi ordina autovalori e autovettori
         BubbleSort(eigValue, eigVector);
 
-        double eigSum = 0;
+        float eigSum = 0;
         for(int i = 0; i < eigValue.length; i++)
         {
             eigSum += eigValue[i];
         }
-        double percentage = 0;
-        double partialEigSum = 0;
+        float percentage = 0;
+        float partialEigSum = 0;
         int eigCount = 0;
-        while(percentage < 0.85)
+        while(percentage < chosenPercentage)
         {
             partialEigSum += eigValue[eigCount++];
             percentage = partialEigSum / eigSum;
         }
-        double[][] mostSigVectors = new double[eigVector.length][eigCount];
+        eigValue = null;
+        double[][] mostSigVectors = new double[eigVector.length][eigCount+1];
         for(int i = 0; i < eigVector.length; i++)
         {
-            for(int j = 0; j < eigCount; j++)
+            for(int j = 0; j <= eigCount; j++)
             {
                 mostSigVectors[i][j] = eigVector[i][j];
             }
         }
-
+        eigVector = null;
         return  mostSigVectors;
     }
 
@@ -225,21 +264,88 @@ public class Algorithm extends Activity {
         tempVector = null;
     }
 
-    public double[][] ComputeEigenFace(double[][] eigVector, double[][] imageLessMean)
+    public double[][] ComputeEigenFace(double[][] eigVector, double[][] imagesLessMean)
     {
         Matrix eigVecM = new Matrix(eigVector);
-        Matrix imgLessMeanM = new Matrix(imageLessMean);
-        return imgLessMeanM.times(eigVecM).getArray();
+        Matrix imgLessMeanM = new Matrix(imagesLessMean);
+        double[][] eig = imgLessMeanM.times(eigVecM).getArray();
+        eigVecM = null;
+        imgLessMeanM = null;
+        return eig;
     }
 
-    public double[][] ComputeCoeffEigenFace(double[][] eigenFace, double[][] imageLessMean)
+    public double[][] ComputeCoeffEigenFaceOfAllImages(double[][] eigenFace, double[][] imagesLessMean)
     {
         //i vettori dei coefficienti di ogni singola immagine sono vettori colonna
         Matrix eigenfaceM = new Matrix(eigenFace);
-        Matrix imgLessMeanM = new Matrix(imageLessMean);
+        Matrix imgLessMeanM = new Matrix(imagesLessMean);
         Matrix eigenT = eigenfaceM.transpose();
-        return eigenT.times(imgLessMeanM).getArray();
+        eigenfaceM = null;
+        double[][] eig = eigenT.times(imgLessMeanM).getArray();
+        imgLessMeanM = null;
+        eigenT = null;
+        return eig;
     }
+
+    public double[] ComputeCoeffEigenFace(double[][] eigenFace, double[] imageLessMean)
+    {
+        double[] coeff = new double[eigenFace.length];
+        for(int c = 0; c < eigenFace[0].length; c++)
+        {
+            for(int r = 0; r < eigenFace.length; r++)
+            {
+                //moltiplico le colonne di eigenface per la colonna di imgLessMean (traspongo eigenFace tramite indici)
+                coeff[c] += eigenFace[r][c] * imageLessMean[r];
+            }
+        }
+        return  coeff;
+    }
+
+    public int FindMinEuclideanDistance(double[] coeff, double[][] coeffEigFace, double threshold)
+    {
+        double minDist = 100; //inizializzo la distanza a 100: valore sicuramente oltre la distanza euclidea
+        double tempDist = 0;
+        int index = -1; // se index = -1 nessuna immagine corrisponde, quindi non riconosco nessuna faccia
+        double[][] EucDist = ComputeEuclideanDistance(coeff, coeffEigFace);
+        for(int c = 0; c < coeffEigFace[0].length; c++)
+        {
+            for( int r = 0; r < coeffEigFace.length; r++)
+            {
+                //elevo al quadrato
+                EucDist[r][c] *= EucDist[r][c];
+                tempDist += EucDist[r][c];
+            }
+            tempDist = Math.sqrt(tempDist) / 10000000;
+            if(tempDist < minDist && tempDist < threshold)
+            {
+                minDist = tempDist;
+                index = c;
+            }
+        }
+        return index;
+    }
+
+    public double[][] ComputeEuclideanDistance(double[] coeff, double[][] coeffEigFace)
+    {
+        double[][] EucDist = new double[coeffEigFace.length][coeffEigFace[0].length];
+        for (int c = 0; c < coeffEigFace[0].length; c++)
+        {
+            for (int r = 0; r < coeffEigFace.length; r++)
+            {
+                EucDist[r][c] = coeff[r] - coeffEigFace[r][c];
+            }
+        }
+        return  EucDist;
+    }
+
+    public void recylingBitmap (Bitmap bm)
+    {
+        if(bm!=null){
+            bm.recycle();
+            bm=null;
+        }
+    }
+
 //
 //    public static byte[][] transposeMatrix(byte [][] m)
 //    {

@@ -86,6 +86,7 @@ public class SavePhotoTraining extends Activity {
 
         bttSaveHome = (Button) findViewById(R.id.bttSaveHome);
 
+
         bttSaveHome.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -279,13 +280,16 @@ public class SavePhotoTraining extends Activity {
         ColorMatrix cm = new ColorMatrix();
         cm.setSaturation(0);
         ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        cm=null;
         paint.setColorFilter(f);
+        f=null;
 //        c.drawBitmap(bmpOriginal, 0, 0, paint);
 //        Ruoto l immagine originale mettendola dritta
 
         Matrix rotate = new Matrix();
         rotate.preRotate(90);
         rotatedBitmap=Bitmap.createBitmap(bmpOriginal,0,0,bmpOriginal.getWidth(),bmpOriginal.getHeight(),rotate,true);
+        rotate=null;
         canvas  = new Canvas(rotatedBitmap);
         canvas.drawBitmap(bmpOriginal,new Rect(0,0,1600,1200), new Rect(), null);
 
@@ -293,6 +297,7 @@ public class SavePhotoTraining extends Activity {
 //        c.drawBitmap(bmpOriginal, new Rect(200,0,1400,1200),new Rect(0,0,360,360), paint);
         // funziona con l immagine dritta
         c.drawBitmap(rotatedBitmap, new Rect(0,150,1200,1350),new Rect(0,0,360,360), paint);
+        paint=null;
 
         return bmpGrayscale;
     }

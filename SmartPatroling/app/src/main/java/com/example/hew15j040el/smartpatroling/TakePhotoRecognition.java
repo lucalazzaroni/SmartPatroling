@@ -41,6 +41,7 @@ public class TakePhotoRecognition extends Activity {
     private final String PATH = "tcp://192.168.1.1:5555/";
     private String imgpath = null;
     private Bitmap imgBitmap = null;
+    private  PhotoSaver ps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +76,12 @@ public class TakePhotoRecognition extends Activity {
             public void onClick(View v) {
                 Log.i(TAG, "setOnClickListener");
 
-//trasforma la foto in memoria "/Pictures/Drone Pictures/Fakebianconero.jpeg" in una ritagliata e in buianco e nero
+//trasforma la foto in memoria "/Pictures/Drone Pictures/Fakebianconero.jpeg" in una ritagliata e in bianco e nero
 //                FakePhotoDrone();
 
 
                 capturePhoto(null);
+
                 Intent imr = new Intent(getApplicationContext(), MatchingRecognition.class);
 
                 //Convert to byte array
@@ -97,9 +99,8 @@ public class TakePhotoRecognition extends Activity {
     }
     private void capturePhoto(View v){
         try {
-            PhotoSaver ps = new PhotoSaver(context, myVideoView.getMediaPlayer());
-            imgpath = ps.record();
-            imgBitmap = ps.image;
+            ps = new PhotoSaver(context, myVideoView.getMediaPlayer());
+            imgBitmap = ps.record();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -112,13 +113,14 @@ public class TakePhotoRecognition extends Activity {
     protected void onStop() {
         super.onStop();
         recylingBitmap(imgBitmap);
+        ps = null;
     }
 
     public void recylingBitmap (Bitmap bm)
     {
         if(bm!=null){
             bm.recycle();
-            bm=null;
+            bm = null;
         }
     }
 
@@ -167,7 +169,6 @@ public class TakePhotoRecognition extends Activity {
         return bmpGrayscale;
     }
     /////////////////////////////////////////////////
-
 
 }
 
