@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import java.io.IOException;
 
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     Button bttTraining;
     Button bttRecognition;
     Button bttSwipe;
+    ImageButton bttSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         bttTraining =(Button)findViewById(R.id.bttTraining);
         bttRecognition =(Button)findViewById(R.id.bttRecognition);
         bttSwipe = (Button)findViewById(R.id.bttswipe);
+        bttSettings = (ImageButton)findViewById(R.id.bttSettings);
 
         GifDrawable gif = null;
         try{
@@ -57,6 +60,15 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent_info = new Intent(MainActivity.this, SwipeActivity.class);
                 startActivity(intent_info);
                 overridePendingTransition(R.anim.up, R.anim.nochange);
+            }
+        });
+
+        bttSettings.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent is = new Intent(getApplicationContext(),Settings.class);
+                startActivity(is);
             }
         });
 
