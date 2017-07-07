@@ -60,7 +60,6 @@ public class SavePhotoTraining extends Activity {
     Button bttSaveContinue;
     String imgPath;
     String _writename;
-    //Button bttCancel;
     ImageView imgPreview;
     File mediaStorageDir;
     File mediaFile;
@@ -223,8 +222,6 @@ public class SavePhotoTraining extends Activity {
         // start the image capture Intent
         startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
 
-
-
     }
 
     private File getOutputMediaFile(int type) {
@@ -283,20 +280,17 @@ public class SavePhotoTraining extends Activity {
         cm=null;
         paint.setColorFilter(f);
         f=null;
-//        c.drawBitmap(bmpOriginal, 0, 0, paint);
-//        Ruoto l immagine originale mettendola dritta
 
         Matrix rotate = new Matrix();
         rotate.preRotate(90);
+        //metto dentro rotateBitmap bmpOriginal girata dritta
         rotatedBitmap=Bitmap.createBitmap(bmpOriginal,0,0,bmpOriginal.getWidth(),bmpOriginal.getHeight(),rotate,true);
         rotate=null;
-        canvas  = new Canvas(rotatedBitmap);
-        canvas.drawBitmap(bmpOriginal,new Rect(0,0,1600,1200), new Rect(), null);
-
-        //funziona per l immagine girata a sx rispetto ad una dritta
-//        c.drawBitmap(bmpOriginal, new Rect(200,0,1400,1200),new Rect(0,0,360,360), paint);
-        // funziona con l immagine dritta
-        c.drawBitmap(rotatedBitmap, new Rect(0,150,1200,1350),new Rect(0,0,360,360), paint);
+//        canvas  = new Canvas(rotatedBitmap);
+        // l immagine e ancora ruotat verso sinistra perciò larghezza e altezza sono invertite
+//        canvas.drawBitmap(bmpOriginal,new Rect(0,0,bmpOriginal.getHeight(),bmpOriginal.getWidth()), new Rect(), null);
+        // metto dentro bmpGrayScale la rotatedBitmap in B/W
+        c.drawBitmap(rotatedBitmap, new Rect(0,(int)(bmpOriginal.getWidth()*0.1),bmpOriginal.getHeight(),(int)(bmpOriginal.getWidth()*0.85)),new Rect(0,0,360,360), paint);
         paint=null;
 
         return bmpGrayscale;

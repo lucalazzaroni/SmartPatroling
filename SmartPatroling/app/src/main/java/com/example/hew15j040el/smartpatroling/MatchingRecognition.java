@@ -54,6 +54,8 @@ public class MatchingRecognition extends Activity {
         if(getIntent().hasExtra("imageByteArray")) {
             byte[] byteArray = getIntent().getByteArrayExtra("imageByteArray");
             imgBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+            //ritaglio la bitmap del drone per vederla quadrata
+            imgBitmap=Bitmap.createBitmap(imgBitmap,140,0,500,360,null,true);
             byteArray = null;
             bmpGrayscale = toGreyScale(imgBitmap);
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +67,7 @@ public class MatchingRecognition extends Activity {
                 trainingBmp = FromJpegToBitmap(Environment.getExternalStorageDirectory() + "/Pictures/" + IMAGE_DIRECTORY_NAME + "/" + fileName);
                 Matrix rotate = new Matrix();
                 rotate.preRotate(90);
-                rotatedBitmap = Bitmap.createBitmap(trainingBmp,trainingBmp.getWidth()/10,0,trainingBmp.getWidth()/20*17,trainingBmp.getHeight(),rotate,true);
+                rotatedBitmap = Bitmap.createBitmap(trainingBmp,(int)(trainingBmp.getWidth()*0.1),0,(int)(trainingBmp.getWidth()/0.85),trainingBmp.getHeight(),rotate,true);
 
 //                rotatedBitmap = Bitmap.createBitmap(trainingBmp,0,0,trainingBmp.getWidth(),trainingBmp.getHeight(),rotate,true);
                 rotate=null;

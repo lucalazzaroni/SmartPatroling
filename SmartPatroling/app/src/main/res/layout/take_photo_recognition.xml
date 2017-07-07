@@ -6,18 +6,21 @@
     android:weightSum="1">
 
     <io.vov.vitamio.widget.VideoView
+        android:layout_marginTop="80dp"
         android:id="@+id/vitamio_videoView"
         android:layout_width="wrap_content"
         android:layout_height="300dp"
-        android:layout_weight="3.5" />
+        android:layout_weight="1.4"
+        />
 
 
     <Button
         android:layout_marginTop="20dp"
         android:id="@+id/bttTakeDronePhoto"
         android:background="@drawable/tondo"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_weight="0.05"
         android:layout_gravity="center_horizontal" />
 
 </LinearLayout>
