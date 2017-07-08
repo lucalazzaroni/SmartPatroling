@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -65,11 +66,17 @@ public class SavePhotoTraining extends Activity {
     File mediaFile;
     File mediaStorageDirBW;
     Bitmap bnBitmap;
+    StrictMode.VmPolicy.Builder builder = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.save_photo_training);
+
+        ///////////////////////////////////////////////////////////////////////////////////
+        builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        ///////////////////////////////////////////////////////////////////////////////////
 
         context = this;
 
@@ -147,7 +154,7 @@ public class SavePhotoTraining extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        // save file url in bundle as it will be null on screen orientation
+        // SaveValues file url in bundle as it will be null on screen orientation
         // changes
         outState.putParcelable("file_uri", fileUri);
     }
@@ -366,8 +373,9 @@ public class SavePhotoTraining extends Activity {
         recylingBitmap(bmpGrayscale);
         recyclingCanvas(canvas);
         recylingBitmap(rotatedBitmap);
-
+        builder = null;
     }
+
     public void recylingBitmap (Bitmap bm)
     {
         if(bm!=null){
@@ -375,6 +383,7 @@ public class SavePhotoTraining extends Activity {
             bm=null;
         }
     }
+
     public void recyclingCanvas(Canvas cv)
     {
         if (cv != null) {

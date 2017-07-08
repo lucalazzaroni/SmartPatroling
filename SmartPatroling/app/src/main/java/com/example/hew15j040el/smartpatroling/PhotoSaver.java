@@ -28,7 +28,7 @@ import io.vov.vitamio.MediaPlayer;
 
  *
 
- * Class allowing to get a frame from the MediaPlayer which streams the video and save it into the local storage of the device.
+ * Class allowing to get a frame from the MediaPlayer which streams the video and SaveValues it into the local storage of the device.
 
  */
 public class PhotoSaver {
@@ -121,7 +121,7 @@ public class PhotoSaver {
 
      *
 
-     * Initializes the File which will be used to save the frame. Called in the record() method.
+     * Initializes the File which will be used to SaveValues the frame. Called in the record() method.
      * @return the File to be used.
 
      */

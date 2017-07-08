@@ -61,8 +61,8 @@ public class MatchingRecognition extends Activity {
             bmpGrayscale = toGreyScale(imgBitmap);
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////
             algorithm = new Algorithm();
-            algorithm.Detection(1f);
-            String fileName = algorithm.Recognize(20f , bmpGrayscale);
+            algorithm.Detection(Settings.percentage);
+            String fileName = algorithm.Recognize(Settings.distance, bmpGrayscale);
             Toast.makeText(getApplicationContext(), "Distance: " + algorithm.minDist, Toast.LENGTH_LONG).show();
             if(fileName != null)
             {
