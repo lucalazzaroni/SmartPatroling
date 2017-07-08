@@ -38,14 +38,12 @@
         android:id="@+id/bttSettings"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_marginStart="17dp"
         android:layout_gravity="center_horizontal"
         android:backgroundTint="@color/colorTransp"
         android:scaleType="fitCenter"
         android:src="@drawable/settings"
         android:layout_above="@+id/bttswipe"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="12dp" />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:drawableRight="@drawable/upp"

@@ -26,6 +26,9 @@ public class Algorithm extends Activity {
     private double[][] coeffEigFace;
     private double[] avgImg;
     private double[][] eigenFace;
+    public double minDist = 100; //inizializzo la distanza a 100: valore sicuramente oltre la distanza euclidea
+
+
     // array of supported extensions (use a List if you prefer)
 //    static final String[] EXTENSIONS = new String[]
 //            {
@@ -303,7 +306,6 @@ public class Algorithm extends Activity {
 
     public int FindMinEuclideanDistance(double[] coeff, double[][] coeffEigFace, double threshold)
     {
-        double minDist = 100; //inizializzo la distanza a 100: valore sicuramente oltre la distanza euclidea
         double tempDist = 0;
         int index = -1; // se index = -1 nessuna immagine corrisponde, quindi non riconosco nessuna faccia
         double[][] EucDist = ComputeEuclideanDistance(coeff, coeffEigFace);
