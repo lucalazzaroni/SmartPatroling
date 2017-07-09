@@ -15,13 +15,14 @@ import android.widget.Toast;
  */
 
 public class Settings extends Activity {
-    public static double distance;
-    public static float percentage;
+    public static double distance = 20;//default value
+    public static float percentage = 1;//default value
     Spinner spinner;
     Spinner spinner1;
     ArrayAdapter<CharSequence> adapter;
     ArrayAdapter<CharSequence> adapter1;
     ImageButton bttDone;
+//    static int positionSelected = 5;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -29,15 +30,27 @@ public class Settings extends Activity {
         setContentView(R.layout.settings);
         bttDone = (ImageButton) findViewById(R.id.bttDone);
         spinner = (Spinner) findViewById(R.id.spinner);
+//        spinner.setSelection(positionSelected);
         adapter = ArrayAdapter.createFromResource(this, R.array.distance, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                Toast.makeText(getBaseContext(), spinner.getItemAtPosition(position) + " selected", Toast.LENGTH_SHORT).show();
+//                positionSelected = position;
+//                Toast.makeText(getBaseContext(), spinner.getItemAtPosition(position) + " selected", Toast.LENGTH_SHORT).show();
                 String item = adapterView.getItemAtPosition(position).toString();
-                distance = Double.parseDouble(item);
+                try
+                {
+                    distance = Double.parseDouble(item);
+                    Toast.makeText(getBaseContext(), spinner.getItemAtPosition(position) + " selected", Toast.LENGTH_SHORT).show();
+                }
+
+                catch(NumberFormatException nfe)
+                {
+                }
+
+
 //                SaveValues(view);
             }
 
@@ -54,10 +67,20 @@ public class Settings extends Activity {
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                Toast.makeText(getBaseContext(), spinner1.getItemAtPosition(position) + " selected", Toast.LENGTH_SHORT).show();
                 String item = adapterView.getItemAtPosition(position).toString();
                 item = item.replace("%", "");
-                percentage = Float.parseFloat(item) / 100;
+
+                try
+                {
+                    percentage = Float.parseFloat(item) / 100;
+                    Toast.makeText(getBaseContext(), spinner1.getItemAtPosition(position) + " selected", Toast.LENGTH_SHORT).show();
+                }
+
+                catch(NumberFormatException nfe)
+                {
+                }
+
+
             }
 
             @Override

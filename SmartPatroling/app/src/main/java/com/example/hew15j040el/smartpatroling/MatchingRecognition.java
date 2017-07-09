@@ -32,7 +32,7 @@ public class MatchingRecognition extends Activity {
     ImageView imgTra;
     Bitmap imgBitmap = null;
     Bitmap bmpGrayscale = null;
-    Canvas c = null;
+    Canvas canGray = null;
     Bitmap rotatedBitmap=null;
     Bitmap trainingBmp = null;
 
@@ -74,13 +74,13 @@ public class MatchingRecognition extends Activity {
 
 //                rotatedBitmap = Bitmap.createBitmap(trainingBmp,0,0,trainingBmp.getWidth(),trainingBmp.getHeight(),rotate,true);
 
-//                c  = new Canvas(rotatedBitmap);
-//                c.drawBitmap(trainingBmp,new Rect(0,0,1600,1200), new Rect(), null);
+//                canGray  = new Canvas(rotatedBitmap);
+//                canGray.drawBitmap(trainingBmp,new Rect(0,0,1600,1200), new Rect(), null);
 
                 //funziona per l immagine girata a sx rispetto ad una dritta
-//        c.drawBitmap(bmpOriginal, new Rect(200,0,1400,1200),new Rect(0,0,360,360), paint);
+//        canGray.drawBitmap(bmpOriginal, new Rect(200,0,1400,1200),new Rect(0,0,360,360), paint);
                 // funziona con l immagine dritta
-//                c.drawBitmap(rotatedBitmap, new Rect(0,150,1200,1350),new Rect(0,0,360,360), null);
+//                canGray.drawBitmap(rotatedBitmap, new Rect(0,150,1200,1350),new Rect(0,0,360,360), null);
                 imgTra.setImageBitmap(rotatedBitmap);
                 name.setText(fileName);
             }
@@ -113,7 +113,7 @@ public class MatchingRecognition extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        recyclingCanvas(c);
+        recyclingCanvas(canGray);
         recylingBitmap(bmpGrayscale);
         recylingBitmap(imgBitmap);
         algorithm = null;
@@ -125,17 +125,18 @@ public class MatchingRecognition extends Activity {
     public Bitmap toGreyScale(Bitmap bmpOriginal)
     {
         bmpGrayscale = Bitmap.createBitmap(360, 360,Bitmap.Config.ARGB_8888);
-        c = new Canvas(bmpGrayscale);
+        canGray = new Canvas(bmpGrayscale);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
         cm.setSaturation(0);
         ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
         paint.setColorFilter(f);
-        c.drawBitmap(bmpOriginal, new Rect(140,0,500,360),new Rect(0,0,360,360), paint);
+        canGray.drawBitmap(bmpOriginal, new Rect(0,0,360,360),new Rect(0,0,360,360), paint);
+//        canGray.drawBitmap(bmpOriginal, new Rect(140,0,500,360),new Rect(0,0,360,360), paint);
 
         //bmpGrayscale.setPixel(0,0, bmpOriginal.getPixel(0,0)    );
 
-        // recyclingCanvas(c);
+        // recyclingCanvas(canGray);
 
         return bmpGrayscale;
     }
@@ -143,7 +144,7 @@ public class MatchingRecognition extends Activity {
 
     public void recylingBitmap (Bitmap bm)
     {
-        if(bm!=null){
+        if(bm!=null&&!bm.isRecycled()){
             bm.recycle();
             bm=null;
         }

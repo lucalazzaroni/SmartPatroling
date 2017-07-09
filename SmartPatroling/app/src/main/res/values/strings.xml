@@ -1,19 +1,25 @@
 <resources>
     <string name="app_name">SmartPatroling</string>
     <string-array name="distance">
-        <item>1</item>
-        <item>0.9</item>
-        <item>0.8</item>
-        <item>0.7</item>
-        <item>0.6</item>
-        <item>0.5</item>
-        <item>0.4</item>
-        <item>0.3</item>
-        <item>0.2</item>
-        <item>0.1</item>
+
+        <item>Select Distance</item>
+        <item>19</item>
+        <item>18</item>
+        <item>17</item>
+        <item>16</item>
+        <item>15</item>
+        <item>14</item>
+        <item>13</item>
+        <item>12</item>
+        <item>11</item>
+        <item>10</item>
+        <item>9</item>
+        <item>8</item>
+
     </string-array>
 
     <string-array name="percentage">
+        <item>Select Percentage</item>
         <item>100%</item>
         <item>95%</item>
         <item>90%</item>

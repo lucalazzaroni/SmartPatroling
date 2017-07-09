@@ -79,6 +79,7 @@ public class TakePhotoRecognition extends Activity {
 //trasforma la foto in memoria "/Pictures/Drone Pictures/Fakebianconero.jpeg" in una ritagliata e in bianco e nero
 //                FakePhotoDrone();
 
+                Toast.makeText(getApplicationContext(), "Capturing image...", Toast.LENGTH_SHORT).show();
 
                 capturePhoto(null);
 
@@ -164,7 +165,7 @@ public class TakePhotoRecognition extends Activity {
 
         //bmpGrayscale.setPixel(0,0, bmpOriginal.getPixel(0,0)    );
 
-        // recyclingCanvas(c);
+        // recyclingCanvas(canGray);
 
         return bmpGrayscale;
     }

@@ -146,11 +146,11 @@ public class Algorithm extends Activity {
 
     public void SubtractMeanOfAllImages(double[][] images, double[] avg)
     {
-        for (int i = 0; i < numberOfImages; i++)
+        for (int c = 0; c < numberOfImages; c++)
         {
-            for(int j = 0; j < RES; j++)
+            for(int r = 0; r < RES; r++)
             {
-                images[j][i]= images[j][i]-avg[j];
+                images[r][c]= images[r][c]-avg[r];
             }
         }
     }
@@ -169,13 +169,13 @@ public class Algorithm extends Activity {
     {
         double[][] cov = new double[numberOfImages][numberOfImages];
 
-        for (int i = 0; i < numberOfImages; i++)
-            for (int j = 0; j < numberOfImages; j++)
+        for (int r = 0; r < numberOfImages; r++)
+            for (int c = 0; c < numberOfImages; c++)
                 for (int k = 0; k < RES; k++)
-                    cov[i][j] += imagesLessMean[k][i] * imagesLessMean[k][j];
-        for (int i = 0; i < cov.length; i++)
-            for(int j = 0; j < cov[0].length; j++)
-                cov[i][j] = cov[i][j] / numberOfImages;
+                    cov[r][c] += imagesLessMean[k][r] * imagesLessMean[k][c];
+        for (int r = 0; r < cov.length; r++)
+            for(int c = 0; c < cov[0].length; c++)
+                cov[r][c] = cov[r][c] / numberOfImages;//normalizzo la covarianza
 
         return cov;
     }
@@ -186,7 +186,7 @@ public class Algorithm extends Activity {
         EigenvalueDecomposition E = cov.eig();
         cov = null;
         double[] eigValue = Diag(E.getD().getArray());
-        double[][] eigVector = E.getV().getArray(); //gli autovettori sono vettori colonna di eigValue
+        double[][] eigVector = E.getV().getArray(); //gli autovettori sono vettori colonna di eigVector
         E = null;
         //Bubblesort mi ordina autovalori e autovettori
         BubbleSort(eigValue, eigVector);
@@ -269,30 +269,45 @@ public class Algorithm extends Activity {
 
     public double[][] ComputeEigenFace(double[][] eigVector, double[][] imagesLessMean)
     {
-        Matrix eigVecM = new Matrix(eigVector);
-        Matrix imgLessMeanM = new Matrix(imagesLessMean);
-        double[][] eig = imgLessMeanM.times(eigVecM).getArray();
-        eigVecM = null;
-        imgLessMeanM = null;
+//        Matrix eigVecM = new Matrix(eigVector);
+//        Matrix imgLessMeanM = new Matrix(imagesLessMean);
+//        double[][] eig = imgLessMeanM.times(eigVecM).getArray();
+//        eigVecM = null;
+//        imgLessMeanM = null;
+        double [][] eig = new double[imagesLessMean.length][eigVector[0].length];
+        for(int r=0;r<imagesLessMean.length ;r++){
+            for (int c=0;c<eigVector[0].length;c++)
+                for(int i=0;i<eigVector.length;i++)
+                {
+                    eig[r][c]+=imagesLessMean[r][i]*eigVector[i][c];
+                }
+        }
         return eig;
+
     }
 
     public double[][] ComputeCoeffEigenFaceOfAllImages(double[][] eigenFace, double[][] imagesLessMean)
     {
         //i vettori dei coefficienti di ogni singola immagine sono vettori colonna
-        Matrix eigenfaceM = new Matrix(eigenFace);
-        Matrix imgLessMeanM = new Matrix(imagesLessMean);
-        Matrix eigenT = eigenfaceM.transpose();
-        eigenfaceM = null;
-        double[][] eig = eigenT.times(imgLessMeanM).getArray();
-        imgLessMeanM = null;
-        eigenT = null;
-        return eig;
+//        Matrix eigenfaceM = new Matrix(eigenFace);
+//        Matrix imgLessMeanM = new Matrix(imagesLessMean);
+//        Matrix eigenT = eigenfaceM.transpose();
+//        eigenfaceM = null;
+//        double[][] eig = eigenT.times(imgLessMeanM).getArray();
+//        imgLessMeanM = null;
+//        eigenT = null;
+//        return eig;
+        double[][] allCoeff =new double[eigenFace[0].length][imagesLessMean[0].length];
+        for (int i = 0; i < eigenFace[0].length ; i++)
+            for (int j = 0; j <imagesLessMean[0].length; j++)
+                for (int k = 0; k < RES; k++)
+                    allCoeff[i][j] += eigenFace[k][i] * imagesLessMean[k][j];
+        return allCoeff;
     }
 
     public double[] ComputeCoeffEigenFace(double[][] eigenFace, double[] imageLessMean)
     {
-        double[] coeff = new double[eigenFace.length];
+        double[] coeff = new double[eigenFace[0].length];
         for(int c = 0; c < eigenFace[0].length; c++)
         {
             for(int r = 0; r < eigenFace.length; r++)
@@ -308,7 +323,8 @@ public class Algorithm extends Activity {
     {
         double tempDist = 0;
         int index = -1; // se index = -1 nessuna immagine corrisponde, quindi non riconosco nessuna faccia
-        double[][] EucDist = ComputeEuclideanDistance(coeff, coeffEigFace);
+        double[][] EucDist = ComputeDistance(coeff, coeffEigFace);
+        //calcolo la distanza euclidea
         for(int c = 0; c < coeffEigFace[0].length; c++)
         {
             for( int r = 0; r < coeffEigFace.length; r++)
@@ -327,7 +343,7 @@ public class Algorithm extends Activity {
         return index;
     }
 
-    public double[][] ComputeEuclideanDistance(double[] coeff, double[][] coeffEigFace)
+    public double[][] ComputeDistance(double[] coeff, double[][] coeffEigFace)
     {
         double[][] EucDist = new double[coeffEigFace.length][coeffEigFace[0].length];
         for (int c = 0; c < coeffEigFace[0].length; c++)

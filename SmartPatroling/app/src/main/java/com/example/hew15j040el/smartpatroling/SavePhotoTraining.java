@@ -1,7 +1,6 @@
 package com.example.hew15j040el.smartpatroling;
 
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,7 +9,6 @@ import java.io.IOException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -53,8 +51,8 @@ public class SavePhotoTraining extends Activity {
     Bitmap bitmap = null;
     Bitmap bmpGrayscale=null;
     Bitmap rotatedBitmap=null;
-    Canvas c=null;
-    Canvas canvas=null;
+    Canvas canGray =null;
+//    Canvas canvas=null;
     TextView name;
     EditText writename = null;
     Button bttSaveHome;
@@ -279,7 +277,7 @@ public class SavePhotoTraining extends Activity {
 //        width = bmpOriginal.getWidth();
 
         bmpGrayscale = Bitmap.createBitmap(360, 360, Bitmap.Config.ARGB_8888);
-        c = new Canvas(bmpGrayscale);
+        canGray = new Canvas(bmpGrayscale);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
         cm.setSaturation(0);
@@ -297,7 +295,10 @@ public class SavePhotoTraining extends Activity {
         // l immagine e ancora ruotat verso sinistra perciò larghezza e altezza sono invertite
 //        canvas.drawBitmap(bmpOriginal,new Rect(0,0,bmpOriginal.getHeight(),bmpOriginal.getWidth()), new Rect(), null);
         // metto dentro bmpGrayScale la rotatedBitmap in B/W
-        c.drawBitmap(rotatedBitmap, new Rect(0,(int)(bmpOriginal.getWidth()*0.1),bmpOriginal.getHeight(),(int)(bmpOriginal.getWidth()*0.85)),new Rect(0,0,360,360), paint);
+        int bmpFormat = bmpOriginal.getWidth() - bmpOriginal.getHeight();
+        int topCut = (int)(bmpFormat * 0.4);
+        int bottomCut = (int)(bmpFormat * 0.6);
+        canGray.drawBitmap(rotatedBitmap, new Rect(0,topCut,bmpOriginal.getHeight(), bmpOriginal.getWidth() - bottomCut), new Rect(0,0,360,360), paint);
         paint=null;
 
         return bmpGrayscale;
@@ -369,16 +370,16 @@ public class SavePhotoTraining extends Activity {
 
         recylingBitmap(bitmap);
         recylingBitmap(bnBitmap);
-        recyclingCanvas(c);
+        recyclingCanvas(canGray);
         recylingBitmap(bmpGrayscale);
-        recyclingCanvas(canvas);
+//        recyclingCanvas(canvas);
         recylingBitmap(rotatedBitmap);
         builder = null;
     }
 
     public void recylingBitmap (Bitmap bm)
     {
-        if(bm!=null){
+        if(bm!=null&&!bm.isRecycled()){
             bm.recycle();
             bm=null;
         }
