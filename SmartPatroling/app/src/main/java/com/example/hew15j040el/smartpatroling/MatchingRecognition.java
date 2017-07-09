@@ -19,6 +19,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 /**
  * Created by HEW15J040EL on 10/05/2017.
  */
@@ -52,13 +57,15 @@ public class MatchingRecognition extends Activity {
         bttHome = (ImageButton)findViewById(R.id.bttHome);
 
         //prendo la bitmap dell'immagine scattata nella TakePhotoRecognition
-        if(getIntent().hasExtra("imageByteArray")) {
-            byte[] byteArray = getIntent().getByteArrayExtra("imageByteArray");
-            imgBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-            //ritaglio la bitmap del drone per vederla quadrata(siccome ritaglio la sessa immagine dove salvo la terza misura è 360 perchè non parte da 0 ma dal 140
-            imgBitmap=Bitmap.createBitmap(imgBitmap,140,0,360,360,null,true);
-            byteArray = null;
-            bmpGrayscale = toGreyScale(imgBitmap);
+//        if(getIntent().hasExtra("imageByteArray")) {
+//            byte[] byteArray = getIntent().getByteArrayExtra("imageByteArray");
+//            imgBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        //ritaglio la bitmap del drone per vederla quadrata(siccome ritaglio la sessa immagine dove salvo la terza misura è 360 perchè non parte da 0 ma dal 140
+
+
+            TakeFromMemory();
+//            byteArray = null;
+//            bmpGrayscale = toGreyScale(imgBitmap);
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////
             algorithm = new Algorithm();
             algorithm.Detection(Settings.percentage);
@@ -88,7 +95,7 @@ public class MatchingRecognition extends Activity {
 
             //metto in imgRec l'immagine scattata nella TakePhotoRecognition
             imgRec.setImageBitmap(imgBitmap);
-        }
+//        }
         bttHome.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -122,25 +129,49 @@ public class MatchingRecognition extends Activity {
 
     }
 
-    public Bitmap toGreyScale(Bitmap bmpOriginal)
+    public void toGreyScale(Bitmap bmpOriginal)
     {
         bmpGrayscale = Bitmap.createBitmap(360, 360,Bitmap.Config.ARGB_8888);
-        canGray = new Canvas(bmpGrayscale);
-        Paint paint = new Paint();
-        ColorMatrix cm = new ColorMatrix();
-        cm.setSaturation(0);
-        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
-        paint.setColorFilter(f);
-        canGray.drawBitmap(bmpOriginal, new Rect(0,0,360,360),new Rect(0,0,360,360), paint);
+        if(bmpGrayscale!=null&&!bmpGrayscale.isRecycled()) {
+            canGray = new Canvas(bmpGrayscale);
+
+            Paint paint = new Paint();
+            ColorMatrix cm = new ColorMatrix();
+            cm.setSaturation(0);
+            ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+            paint.setColorFilter(f);
+            canGray.drawBitmap(bmpOriginal, new Rect(0, 0, 360, 360), new Rect(0, 0, 360, 360), paint);
+        }
 //        canGray.drawBitmap(bmpOriginal, new Rect(140,0,500,360),new Rect(0,0,360,360), paint);
 
         //bmpGrayscale.setPixel(0,0, bmpOriginal.getPixel(0,0)    );
 
         // recyclingCanvas(canGray);
 
-        return bmpGrayscale;
     }
 
+        public void TakeFromMemory() {
+            //recupero immagine scattata col drone dalla memoria
+            imgBitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Pictures/Drone Pictures/tempdrone.jpeg");
+            //taglio
+            imgBitmap = Bitmap.createBitmap(imgBitmap,140,0,360,360,null,true);
+            //converto in bianco e nero
+            toGreyScale(imgBitmap);
+//            salvo la foto in B/N in memoria
+            try {
+                File bnFile;
+                String _bnPath = Environment.getExternalStorageDirectory() + "/Pictures/Drone Pictures BW/tempdrone.jpeg";
+                bnFile = new File(_bnPath);
+                FileOutputStream fosBw = new FileOutputStream(bnFile);
+                bmpGrayscale.compress(Bitmap.CompressFormat.JPEG, 100, fosBw);
+                fosBw.close();
+//                recylingBitmap(bwImage);
+            } catch (FileNotFoundException fnfe) {
+                fnfe.printStackTrace();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
 
     public void recylingBitmap (Bitmap bm)
     {

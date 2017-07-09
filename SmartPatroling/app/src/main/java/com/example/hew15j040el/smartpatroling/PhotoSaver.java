@@ -32,19 +32,20 @@ import io.vov.vitamio.MediaPlayer;
 
  */
 public class PhotoSaver {
-//    String filename;
-//    String finalname;
-//    Bitmap image=null;
-//    Bitmap bwImage =null;
-
-//    Calendar rightNow;
+    String filename = "tempdrone.jpeg";
+    String finalname;
+    Bitmap image = null;
+    Bitmap bwImage = null;
+//    Bitmap bmpGrayscale = null;
+//    Canvas canGray = null;
+    //    Calendar rightNow;
     MediaPlayer mMediaPlayer;
     Context context;
-//    String imgname = null;
-//    private static final String DRONE_DIRECTORY_NAME = "Drone Pictures";
-//    private static final String DRONE_BW_DIRECTORY_NAME = "Drone Pictures BW";
-//    private File mediaStorageDir;
-//    private File mediaStorageDirBW;
+    String imgname = null;
+    private static final String DRONE_DIRECTORY_NAME = "Drone Pictures";
+    private static final String DRONE_BW_DIRECTORY_NAME = "Drone Pictures BW";
+    private File mediaStorageDir;
+    private File mediaStorageDirBW;
 
 
 //    public String getImgname()
@@ -69,20 +70,20 @@ public class PhotoSaver {
      the PNG format.
 
      */
-    public Bitmap record(){
+    public void record(){
         if(Environment.getExternalStorageState() != null){
-//            try{
+            try{
 
-                return mMediaPlayer.getCurrentFrame(); //scatta la foto
-//                File picture = getOutputMediaFile(); //crea le due directory per foto a colori e BW e un file vuoto dove salvare l'immagine a colori
-//                FileOutputStream fos = new FileOutputStream(picture);
-//                image.compress(Bitmap.CompressFormat.JPEG, 100, fos); //salva la foto a colori
-//                fos.close();
+            image = mMediaPlayer.getCurrentFrame(); //scatta la foto
+                File picture = getOutputMediaFile(); //crea le due directory per foto a colori e BW e un file vuoto dove salvare l'immagine a colori
+                FileOutputStream fos = new FileOutputStream(picture);
+                image.compress(Bitmap.CompressFormat.JPEG, 100, fos); //salva la foto a colori
+                fos.close();
 
 //                bwImage = toGreyScale(image);
 //                try {
 //                    File bnFile;
-//                    String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + DRONE_BW_DIRECTORY_NAME + "/"+ finalname + ".jpeg";
+//                    String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + DRONE_BW_DIRECTORY_NAME + "/"+ filename;
 //                    bnFile = new File(_bnPath);
 //                    FileOutputStream fosBw = new FileOutputStream(bnFile);
 //                    bwImage.compress(Bitmap.CompressFormat.JPEG, 100, fosBw);
@@ -99,20 +100,20 @@ public class PhotoSaver {
 //                }
 //
 //                Toast.makeText(context, "Picture saved in :" + imgname , Toast.LENGTH_SHORT).show();
-//
-//            } catch(FileNotFoundException e){
-//                Toast.makeText(context, "Picture file creation failed" , Toast.LENGTH_SHORT).show();
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                Toast.makeText(context, "Unable to create picture file" , Toast.LENGTH_SHORT).show();
-//            }
-//        }else{
-//            Toast.makeText(context, "Internal memory not available" , Toast.LENGTH_SHORT).show();
+
+            } catch(FileNotFoundException e){
+                Toast.makeText(context, "Picture file creation failed" , Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(context, "Unable to create picture file" , Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(context, "Internal memory not available" , Toast.LENGTH_SHORT).show();
         }
-//        recylingBitmap(image);
+        recylingBitmap(image);
 //        return imgname;
-        return null;
+//        return null;
     }
 
 
@@ -125,60 +126,76 @@ public class PhotoSaver {
      * @return the File to be used.
 
      */
-//    private  File getOutputMediaFile() {
-//
-//        mediaStorageDir = new File(
-//                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-//                DRONE_DIRECTORY_NAME);
-//
-//        // Create the storage directory if it does not exist
-//        if (!mediaStorageDir.exists()) {
-//            if (!mediaStorageDir.mkdirs()) {
-//                Log.d(DRONE_DIRECTORY_NAME, "Oops! Failed to create "
-//                        + DRONE_DIRECTORY_NAME + " directory");
-//                return null;
-//            }
-//        }
-//
-//        //creazione cartella per foto BW
-//        mediaStorageDirBW = new File(
-//                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-//                DRONE_BW_DIRECTORY_NAME);
-//
-//        if (!mediaStorageDirBW.exists()) {
-//            if (!mediaStorageDirBW.mkdirs()) {
-//                Log.d(DRONE_BW_DIRECTORY_NAME, "Oops! Failed to create "
-//                        + DRONE_BW_DIRECTORY_NAME + " directory");
-//                return null;
-//            }
-//        }
-//
+    private  File getOutputMediaFile() {
+
+        mediaStorageDir = new File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                DRONE_DIRECTORY_NAME);
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d(DRONE_DIRECTORY_NAME, "Oops! Failed to create "
+                        + DRONE_DIRECTORY_NAME + " directory");
+                return null;
+            }
+        }
+
+//        creazione cartella per foto BW
+        mediaStorageDirBW = new File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                DRONE_BW_DIRECTORY_NAME);
+
+        if (!mediaStorageDirBW.exists()) {
+            if (!mediaStorageDirBW.mkdirs()) {
+                Log.d(DRONE_BW_DIRECTORY_NAME, "Oops! Failed to create "
+                        + DRONE_BW_DIRECTORY_NAME + " directory");
+                return null;
+            }
+        }
+
 //            rightNow = Calendar.getInstance();
 //            finalname = "DronePicture_" + rightNow.get(Calendar.HOUR) + ":" + rightNow.get(Calendar.MINUTE) + ":" + rightNow.get(Calendar.SECOND) + "_" + filename;
-//            //Create a media file name
-//            File mediaFile;
-//            imgname = Environment.getExternalStorageDirectory() + "/Pictures/" + DRONE_DIRECTORY_NAME + "/" + finalname + ".jpeg";
+            //Create a media file name
+            File mediaFile;
+            imgname = Environment.getExternalStorageDirectory() + "/Pictures/" + DRONE_DIRECTORY_NAME + "/" + filename;
+
+            mediaFile = new File(imgname);
+            return mediaFile;
+    }
+
+//    public Bitmap toGreyScale(Bitmap bmpOriginal){
+//        bmpGrayscale = Bitmap.createBitmap(360, 360,Bitmap.Config.ARGB_8888);
+//        canGray = new Canvas(bmpGrayscale);
+//        Paint paint = new Paint();
+//        ColorMatrix cm = new ColorMatrix();
+//        cm.setSaturation(0);
+//        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+//        paint.setColorFilter(f);
+//        canGray.drawBitmap(bmpOriginal, new Rect(140,0,500,360),new Rect(0,0,360,360), paint);
 //
-//            mediaFile = new File(imgname);
-//            return mediaFile;
-//    }
-
-
-
+//        //bmpGrayscale.setPixel(0,0, bmpOriginal.getPixel(0,0)    );
 //
-//    public void recylingBitmap (Bitmap bm)
-//    {
-//        if(bm!=null){
-//            bm.recycle();
-//            bm=null;
-//        }
+//        // recyclingCanvas(c);
+//
+//        return bmpGrayscale;
 //    }
-//    public void recyclingCanvas(Canvas cv)
-//    {
-//        if (cv != null) {
-//            cv.setBitmap(null);
-//            cv = null;
-//        }
-//    }
+
+
+
+    public void recylingBitmap (Bitmap bm)
+    {
+        if(bm!=null && !bm.isRecycled()){
+            bm.recycle();
+            bm=null;
+        }
+    }
+    public void recyclingCanvas(Canvas cv)
+    {
+        if (cv != null) {
+            cv.setBitmap(null);
+            cv = null;
+        }
+    }
 
 }

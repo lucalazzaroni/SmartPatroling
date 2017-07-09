@@ -61,6 +61,7 @@ public class Algorithm extends Activity {
         }
         //calcolo la matrice media
         avgImg = AverageImage(matrixOfImages);
+//        Bitmap eigenFaceBM = ArrayToBitmap(matrixOfImages, 2);
         //sottraggo la media
         SubtractMeanOfAllImages(matrixOfImages, avgImg);
         //calcolo matrice di covarianza
@@ -71,7 +72,7 @@ public class Algorithm extends Activity {
         //calcolo autofacce associate alle immagini
         eigenFace = ComputeEigenFace(sigEigVector, matrixOfImages);
         ////////////////////////////////////////////////////////////////////////////////////
-
+//        Bitmap eigenFaceBM = ArrayToBitmap(eigenFace, 2);
         ////////////////////////////////////////////////////////////////////////////////////
         sigEigVector = null;
         //calcolo coefficienti associati alle immagini
@@ -113,7 +114,8 @@ public class Algorithm extends Activity {
         {
             for(int c = 0; c < 360; c++)
             {
-                imageArray[c + 360*r] = bmp.getPixel(c,r) & 0x000000FF; //maschera per considerare un solo byte tanto R G e B sono uguali essendo immagine in b/n
+                int point=bmp.getPixel(c,r);
+                imageArray[c + 360*r] = point & 0x000000FF; //maschera per considerare un solo byte tanto R G e B sono uguali essendo immagine in b/n
             }
         }
     }
@@ -372,6 +374,17 @@ public class Algorithm extends Activity {
 //            for (int j = 0; j < m[0].length; j++)
 //                temp[j][i] = m[i][j];
 //        return temp;
+//    }
+//
+//    public Bitmap ArrayToBitmap (double[][] myImages, int col)
+//    {
+//        int[] image = new int[myImages.length];
+//        //immagine singola
+//        for(int r = 0; r < myImages.length; r++)
+//        {
+//            image[r] = (int)(myImages[r][col]);
+//        }
+//        return Bitmap.createBitmap(image, 360, 360, Bitmap.Config.ARGB_8888);
 //    }
 }
 
