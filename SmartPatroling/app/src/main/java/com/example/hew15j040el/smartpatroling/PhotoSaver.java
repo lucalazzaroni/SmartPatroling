@@ -190,12 +190,12 @@ public class PhotoSaver {
             bm=null;
         }
     }
-    public void recyclingCanvas(Canvas cv)
-    {
-        if (cv != null) {
-            cv.setBitmap(null);
-            cv = null;
-        }
-    }
+//    public void recyclingCanvas(Canvas cv)
+//    {
+//        if (cv != null) {
+//            cv.setBitmap(null);
+//            cv = null;
+//        }
+//    }
 
 }

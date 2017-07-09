@@ -295,6 +295,8 @@ public class SavePhotoTraining extends Activity {
         // l immagine e ancora ruotat verso sinistra perciò larghezza e altezza sono invertite
 //        canvas.drawBitmap(bmpOriginal,new Rect(0,0,bmpOriginal.getHeight(),bmpOriginal.getWidth()), new Rect(), null);
         // metto dentro bmpGrayScale la rotatedBitmap in B/W
+
+        //ritaglio in modo diverso a seconda del formato della foto
         int bmpFormat = bmpOriginal.getWidth() - bmpOriginal.getHeight();
         int topCut = (int)(bmpFormat * 0.4);
         int bottomCut = (int)(bmpFormat * 0.6);

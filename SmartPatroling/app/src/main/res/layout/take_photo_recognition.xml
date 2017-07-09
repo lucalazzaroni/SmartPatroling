@@ -7,10 +7,11 @@
 
     <io.vov.vitamio.widget.VideoView
         android:id="@+id/vitamio_videoView"
-        android:layout_width="800dp"
-        android:layout_height="360dp"
-        android:layout_weight="1.4"
-        android:layout_marginTop="80dp" />
+        android:layout_width="640mm"
+        android:layout_height="360mm"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="80dp"
+        android:layout_weight="1.4" />
 
 
     <Button
