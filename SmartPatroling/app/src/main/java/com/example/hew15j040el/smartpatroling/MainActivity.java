@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     Button bttRecognition;
     Button bttSwipe;
     ImageButton bttSettings;
+    GifDrawable gif = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         bttSwipe = (Button)findViewById(R.id.bttswipe);
         bttSettings = (ImageButton)findViewById(R.id.bttSettings);
 
-        GifDrawable gif = null;
+
         try{
             gif = new GifDrawable(getResources(), R.drawable.drone);
             findViewById(R.id.activity_main).setBackground(gif);
@@ -72,6 +73,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
 
+
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        gif = null;
+    }
 }

@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -38,7 +39,7 @@ public class MatchingRecognition extends Activity {
     Bitmap imgBitmap = null;
     Bitmap bmpGrayscale = null;
     Canvas canGray = null;
-    Bitmap rotatedBitmap=null;
+    Bitmap rotatedBitmap = null;
     Bitmap trainingBmp = null;
 
     private static final String IMAGE_DIRECTORY_NAME = "Smart Patroling";
@@ -70,7 +71,7 @@ public class MatchingRecognition extends Activity {
             algorithm = new Algorithm();
             algorithm.Detection(Settings.percentage);
             String fileName = algorithm.Recognize(Settings.distance, bmpGrayscale);
-            Toast.makeText(getApplicationContext(), "Distance: " + algorithm.minDist, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Distance: " + (float)algorithm.minDist, Toast.LENGTH_LONG).show();
             if(fileName != null)
             {
                 trainingBmp = FromJpegToBitmap(Environment.getExternalStorageDirectory() + "/Pictures/" + IMAGE_DIRECTORY_NAME + "/" + fileName);
@@ -124,20 +125,25 @@ public class MatchingRecognition extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
+
+        if(imgBitmap != null && !imgBitmap.isRecycled())
+            recyclingCanvas(canGray);
+
         recylingBitmap(bmpGrayscale);
-        recylingBitmap(imgBitmap);//invertiti
-        recyclingCanvas(canGray);//invertiti
+        recylingBitmap(imgBitmap);
 
         algorithm = null;
         recylingBitmap(rotatedBitmap);
         recylingBitmap(trainingBmp);
+        imgTra = null;
+        imgRec = null;
 
     }
 
     public void toGreyScale(Bitmap bmpOriginal)
     {
         bmpGrayscale = Bitmap.createBitmap(360, 360,Bitmap.Config.ARGB_8888);
-        if(bmpOriginal!=null&&!bmpOriginal.isRecycled()) {
+        if(bmpOriginal != null && !bmpOriginal.isRecycled()) {
             canGray = new Canvas(bmpGrayscale);
 
             Paint paint = new Paint();
@@ -155,16 +161,18 @@ public class MatchingRecognition extends Activity {
 
     }
 
-        public void TakeFromMemory() {
+        public void TakeFromMemory()
+        {
             //recupero immagine scattata col drone dalla memoria
             imgBitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Pictures/Drone Pictures/tempdrone.jpeg");
             //taglio
-            imgBitmap = Bitmap.createBitmap(imgBitmap,140,0,360,360,null,true);
+            imgBitmap = Bitmap.createBitmap(imgBitmap, 140, 0, 360, 360, null, true);
             //converto in bianco e nero
 
             toGreyScale(imgBitmap);
 //            salvo la foto in B/N in memoria
-            try {
+            try
+            {
                 File bnFile;
                 String _bnPath = Environment.getExternalStorageDirectory() + "/Pictures/Drone Pictures BW/tempdrone.jpeg";
                 bnFile = new File(_bnPath);
@@ -172,18 +180,22 @@ public class MatchingRecognition extends Activity {
                 bmpGrayscale.compress(Bitmap.CompressFormat.JPEG, 100, fosBw);
                 fosBw.close();
 //                recylingBitmap(bwImage);
-            } catch (FileNotFoundException fnfe) {
+            }
+            catch (FileNotFoundException fnfe)
+            {
                 fnfe.printStackTrace();
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe)
+            {
                 ioe.printStackTrace();
             }
         }
 
     public void recylingBitmap (Bitmap bm)
     {
-        if(bm!=null&&!bm.isRecycled()){
+        if(bm != null && !bm.isRecycled()){
             bm.recycle();
-            bm=null;
+            bm = null;
         }
     }
 

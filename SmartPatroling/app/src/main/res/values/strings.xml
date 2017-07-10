@@ -2,7 +2,7 @@
     <string name="app_name">SmartPatroling</string>
     <string-array name="distance">
 
-        <item>Select Distance</item>
+        <item>Select Threshold</item>
         <item>19</item>
         <item>18</item>
         <item>17</item>
@@ -28,10 +28,6 @@
         <item>75%</item>
         <item>70%</item>
         <item>65%</item>
-        <item>60%</item>
-        <item>55%</item>
-        <item>50%</item>
-
 
     </string-array>
 </resources>

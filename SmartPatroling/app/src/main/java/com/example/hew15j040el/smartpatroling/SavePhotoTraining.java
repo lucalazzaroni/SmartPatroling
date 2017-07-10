@@ -369,10 +369,9 @@ public class SavePhotoTraining extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-
+        recyclingCanvas(canGray);
         recylingBitmap(bitmap);
         recylingBitmap(bnBitmap);
-        recyclingCanvas(canGray);
         recylingBitmap(bmpGrayscale);
 //        recyclingCanvas(canvas);
         recylingBitmap(rotatedBitmap);
@@ -381,9 +380,9 @@ public class SavePhotoTraining extends Activity {
 
     public void recylingBitmap (Bitmap bm)
     {
-        if(bm!=null&&!bm.isRecycled()){
+        if(bm != null && !bm.isRecycled()){
             bm.recycle();
-            bm=null;
+            bm = null;
         }
     }
 

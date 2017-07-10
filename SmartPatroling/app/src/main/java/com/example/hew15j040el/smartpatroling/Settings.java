@@ -15,7 +15,7 @@ import android.widget.Toast;
  */
 
 public class Settings extends Activity {
-    public static double distance = 20;//default value
+    public static double distance = 19;//default value
     public static float percentage = 1;//default value
     Spinner spinner;
     Spinner spinner1;

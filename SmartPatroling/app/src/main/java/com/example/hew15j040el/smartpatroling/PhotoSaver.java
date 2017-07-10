@@ -33,9 +33,9 @@ import io.vov.vitamio.MediaPlayer;
  */
 public class PhotoSaver {
     String filename = "tempdrone.jpeg";
-    String finalname;
+//    String finalname;
     Bitmap image = null;
-    Bitmap bwImage = null;
+//    Bitmap bwImage = null;
 //    Bitmap bmpGrayscale = null;
 //    Canvas canGray = null;
     //    Calendar rightNow;
@@ -74,7 +74,7 @@ public class PhotoSaver {
         if(Environment.getExternalStorageState() != null){
             try{
 
-            image = mMediaPlayer.getCurrentFrame(); //scatta la foto
+                image = mMediaPlayer.getCurrentFrame(); //scatta la foto
                 File picture = getOutputMediaFile(); //crea le due directory per foto a colori e BW e un file vuoto dove salvare l'immagine a colori
                 FileOutputStream fos = new FileOutputStream(picture);
                 image.compress(Bitmap.CompressFormat.JPEG, 100, fos); //salva la foto a colori
@@ -111,7 +111,13 @@ public class PhotoSaver {
         }else{
             Toast.makeText(context, "Internal memory not available" , Toast.LENGTH_SHORT).show();
         }
+
+        //dealloco memoria
         recylingBitmap(image);
+        mMediaPlayer = null;
+        context = null;
+        mediaStorageDir = null;
+        mediaStorageDirBW = null;
 //        return imgname;
 //        return null;
     }
@@ -187,7 +193,7 @@ public class PhotoSaver {
     {
         if(bm!=null && !bm.isRecycled()){
             bm.recycle();
-            bm=null;
+            bm = null;
         }
     }
 //    public void recyclingCanvas(Canvas cv)

@@ -39,13 +39,15 @@ public class TakePhotoRecognition extends Activity {
     private Context context = null;
     private VideoView myVideoView;
     private final String PATH = "tcp://192.168.1.1:5555/";
-    private String imgpath = null;
+//    private String imgpath = null;
     private Bitmap imgBitmap = null;
-    private  PhotoSaver ps;
+    private PhotoSaver ps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Toast.makeText(getApplicationContext(), "Please wait for the drone camera to open...", Toast.LENGTH_LONG).show();
+
 
         if (!LibsChecker.checkVitamioLibs(this))
             return;
@@ -106,7 +108,7 @@ public class TakePhotoRecognition extends Activity {
         }
         catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "Picture error!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Picture error!", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -116,6 +118,8 @@ public class TakePhotoRecognition extends Activity {
         super.onStop();
         recylingBitmap(imgBitmap);
         ps = null;
+        context = null;
+        myVideoView = null;
     }
 
     public void recylingBitmap (Bitmap bm)
