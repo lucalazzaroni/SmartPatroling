@@ -21,7 +21,6 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="12dp"
-        android:background="#f1f1f1"
         android:spinnerMode="dialog"
         android:layout_below="@+id/distance"
         android:layout_alignParentStart="true" />
@@ -39,7 +38,6 @@
         android:id="@+id/spinner1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#f1f1f1"
         android:spinnerMode="dialog"
         android:layout_below="@+id/percentage"
         android:layout_alignParentStart="true" />
@@ -54,6 +52,17 @@
         android:src="@drawable/spunta"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
+
+    <ImageButton
+        android:id="@+id/bttHelp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/question"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>

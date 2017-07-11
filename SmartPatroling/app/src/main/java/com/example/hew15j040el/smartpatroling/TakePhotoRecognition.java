@@ -47,7 +47,7 @@ public class TakePhotoRecognition extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Toast.makeText(getApplicationContext(), "Please wait for the drone camera to open...", Toast.LENGTH_LONG).show();
-
+        final android.media.MediaPlayer tonoMP = android.media.MediaPlayer.create(this, R.raw.scatto);
 
         if (!LibsChecker.checkVitamioLibs(this))
             return;
@@ -77,6 +77,7 @@ public class TakePhotoRecognition extends Activity {
             @Override
             public void onClick(View v) {
 
+                tonoMP.start();
                 Log.i(TAG, "setOnClickListener");
 
 //trasforma la foto in memoria "/Pictures/Drone Pictures/Fakebianconero.jpeg" in una ritagliata e in bianco e nero

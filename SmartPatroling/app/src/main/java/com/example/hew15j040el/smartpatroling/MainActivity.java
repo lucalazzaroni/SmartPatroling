@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.io.IOException;
 
@@ -18,12 +19,17 @@ public class MainActivity extends AppCompatActivity {
     Button bttSwipe;
     ImageButton bttSettings;
     GifDrawable gif = null;
+    TextView textDistance;
+    TextView textPercentage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        textDistance = (TextView)  findViewById(R.id.textDistance);
+        textDistance.setText("Current threshold: " + (int)(Settings.distance));
+        textPercentage = (TextView)  findViewById(R.id.textPercentage);
+        textPercentage.setText("Current precision: " + (int)(Settings.percentage * 100) + "%");
         bttTraining =(Button)findViewById(R.id.bttTraining);
         bttRecognition =(Button)findViewById(R.id.bttRecognition);
         bttSwipe = (Button)findViewById(R.id.bttswipe);

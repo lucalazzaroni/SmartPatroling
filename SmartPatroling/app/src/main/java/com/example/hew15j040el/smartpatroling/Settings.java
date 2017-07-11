@@ -1,6 +1,8 @@
 package com.example.hew15j040el.smartpatroling;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +24,7 @@ public class Settings extends Activity {
     ArrayAdapter<CharSequence> adapter;
     ArrayAdapter<CharSequence> adapter1;
     ImageButton bttDone;
+    ImageButton bttHelp;
 //    static int positionSelected = 5;
 
     @Override
@@ -29,6 +32,7 @@ public class Settings extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
         bttDone = (ImageButton) findViewById(R.id.bttDone);
+        bttHelp = (ImageButton) findViewById(R.id.bttHelp);
         spinner = (Spinner) findViewById(R.id.spinner);
 //        spinner.setSelection(positionSelected);
         adapter = ArrayAdapter.createFromResource(this, R.array.distance, android.R.layout.simple_spinner_item);
@@ -78,6 +82,7 @@ public class Settings extends Activity {
 
                 catch(NumberFormatException nfe)
                 {
+
                 }
 
 
@@ -88,12 +93,30 @@ public class Settings extends Activity {
 
             }
         });
+
         bttDone.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Intent ima = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(ima);
+            }
+        });
+
+        bttHelp.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                AlertDialog alertDialog = new AlertDialog.Builder(Settings.this).create();
+                alertDialog.setTitle("Hint:");
+                alertDialog.setMessage(getString(R.string.settingsHint));
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
             }
         });
     }

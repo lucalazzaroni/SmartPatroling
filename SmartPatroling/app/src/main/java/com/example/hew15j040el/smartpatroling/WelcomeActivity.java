@@ -15,7 +15,7 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         final MediaPlayer tonoMP = MediaPlayer.create(this,R.raw.falcoaud);
-        imageView=(ImageView)findViewById(R.id.imageView2);
+        imageView = (ImageView)findViewById(R.id.imageView2);
         Animation animation= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.welcome);
         imageView.setAnimation(animation);
 

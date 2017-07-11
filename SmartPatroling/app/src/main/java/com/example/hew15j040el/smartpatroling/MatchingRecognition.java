@@ -65,8 +65,8 @@ public class MatchingRecognition extends Activity {
 //            imgBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         //ritaglio la bitmap del drone per vederla quadrata(siccome ritaglio la sessa immagine dove salvo la terza misura è 360 perchè non parte da 0 ma dal 140
 
-//            FakeTakeFromMemory();//utilizzare l'app con foto del training anziche del drone
-        TakeFromMemory();
+            FakeTakeFromMemory();//utilizzare l'app con foto del training anziche del drone
+//        TakeFromMemory();
 
 //            byteArray = null;
 //            bmpGrayscale = toGreyScale(imgBitmap);
