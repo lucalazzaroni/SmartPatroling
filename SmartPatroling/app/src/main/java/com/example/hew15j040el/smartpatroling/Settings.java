@@ -15,7 +15,7 @@ import android.widget.Toast;
  */
 
 public class Settings extends Activity {
-    public static double distance = 19;//default value
+    public static float distance = 19;//default value
     public static float percentage = 1;//default value
     Spinner spinner;
     Spinner spinner1;
@@ -42,7 +42,7 @@ public class Settings extends Activity {
                 String item = adapterView.getItemAtPosition(position).toString();
                 try
                 {
-                    distance = Double.parseDouble(item);
+                    distance = Float.parseFloat(item);
                     Toast.makeText(getBaseContext(), spinner.getItemAtPosition(position) + " selected", Toast.LENGTH_SHORT).show();
                 }
 

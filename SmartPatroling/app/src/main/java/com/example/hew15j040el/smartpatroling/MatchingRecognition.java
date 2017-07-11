@@ -63,15 +63,16 @@ public class MatchingRecognition extends Activity {
 //            imgBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         //ritaglio la bitmap del drone per vederla quadrata(siccome ritaglio la sessa immagine dove salvo la terza misura è 360 perchè non parte da 0 ma dal 140
 
+            FakeTakeFromMemory();//utilizzare l'app con foto del training anziche del drone
+//            TakeFromMemory();
 
-            TakeFromMemory();
 //            byteArray = null;
 //            bmpGrayscale = toGreyScale(imgBitmap);
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////
             algorithm = new Algorithm();
             algorithm.Detection(Settings.percentage);
             String fileName = algorithm.Recognize(Settings.distance, bmpGrayscale);
-            Toast.makeText(getApplicationContext(), "Distance: " + (float)algorithm.minDist, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Distance: " + algorithm.minDist, Toast.LENGTH_LONG).show();
             if(fileName != null)
             {
                 trainingBmp = FromJpegToBitmap(Environment.getExternalStorageDirectory() + "/Pictures/" + IMAGE_DIRECTORY_NAME + "/" + fileName);
@@ -81,7 +82,7 @@ public class MatchingRecognition extends Activity {
                 int bmpFormat = trainingBmp.getWidth() - trainingBmp.getHeight();
                 int topCut = (int)(bmpFormat * 0.4);
                 int bottomCut = (int)(bmpFormat * 0.6);
-                rotatedBitmap = Bitmap.createBitmap(trainingBmp,topCut,0,trainingBmp.getWidth()-bottomCut,trainingBmp.getHeight(),rotate,true);
+                rotatedBitmap = Bitmap.createBitmap(trainingBmp,topCut,0,trainingBmp.getWidth()-bottomCut-topCut,trainingBmp.getHeight(),rotate,true);
                 rotate=null;
 
 //                rotatedBitmap = Bitmap.createBitmap(trainingBmp,0,0,trainingBmp.getWidth(),trainingBmp.getHeight(),rotate,true);
@@ -158,7 +159,6 @@ public class MatchingRecognition extends Activity {
         //bmpGrayscale.setPixel(0,0, bmpOriginal.getPixel(0,0)    );
 
         // recyclingCanvas(canGray);
-
     }
 
         public void TakeFromMemory()
@@ -168,9 +168,9 @@ public class MatchingRecognition extends Activity {
             //taglio
             imgBitmap = Bitmap.createBitmap(imgBitmap, 140, 0, 360, 360, null, true);
             //converto in bianco e nero
-
             toGreyScale(imgBitmap);
-//            salvo la foto in B/N in memoria
+
+//            salvo la foto in B/N in memoria per questioni di debug
             try
             {
                 File bnFile;
@@ -212,5 +212,11 @@ public class MatchingRecognition extends Activity {
     public Bitmap FromJpegToBitmap(String _filepath)
     {
         return BitmapFactory.decodeFile( _filepath );
+    }
+
+    //Funzione utile per il debug senza drone
+    public void FakeTakeFromMemory()
+    {
+        bmpGrayscale = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Pictures/Smart Patroling BW/chicco2.jpeg");
     }
 }
