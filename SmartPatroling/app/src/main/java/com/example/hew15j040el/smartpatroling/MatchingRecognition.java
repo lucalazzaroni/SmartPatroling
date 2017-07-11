@@ -43,10 +43,10 @@ public class MatchingRecognition extends Activity {
     Canvas canGray = null;
     Bitmap rotatedBitmap = null;
     Bitmap trainingBmp = null;
-
     private static final String IMAGE_DIRECTORY_NAME = "Smart Patroling";
-    private Algorithm algorithm;
-
+    private static Algorithm algorithm;
+    static int numberOfImages = -1; //numero di immagini non possibile
+    static int i = 0; //per debug
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,16 +65,23 @@ public class MatchingRecognition extends Activity {
 //            imgBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         //ritaglio la bitmap del drone per vederla quadrata(siccome ritaglio la sessa immagine dove salvo la terza misura è 360 perchè non parte da 0 ma dal 140
 
-            FakeTakeFromMemory();//utilizzare l'app con foto del training anziche del drone
-//            TakeFromMemory();
+//            FakeTakeFromMemory();//utilizzare l'app con foto del training anziche del drone
+        TakeFromMemory();
 
 //            byteArray = null;
 //            bmpGrayscale = toGreyScale(imgBitmap);
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////
         try
         {
-            algorithm = new Algorithm();
-            algorithm.Detection(Settings.percentage);
+//            algorithm = new Algorithm();
+            //se il training set non cambia utilizzo le stesse autofacce di prima senza ricalcolare
+            int currentNumberOfImages = new File(Environment.getExternalStorageDirectory()+"/Pictures/Smart Patroling BW").listFiles().length;;
+            if(currentNumberOfImages != numberOfImages)
+            {
+                numberOfImages = currentNumberOfImages;
+                algorithm = new Algorithm();
+                algorithm.Detection(Settings.percentage);
+            }
             String fileName = algorithm.Recognize(Settings.distance, bmpGrayscale);
             Toast.makeText(getApplicationContext(), "Distance: " + algorithm.minDist, Toast.LENGTH_LONG).show();
 
@@ -153,7 +160,7 @@ public class MatchingRecognition extends Activity {
         recylingBitmap(bmpGrayscale);
         recylingBitmap(imgBitmap);
 
-        algorithm = null;
+//        algorithm = null;
         recylingBitmap(rotatedBitmap);
         recylingBitmap(trainingBmp);
         imgTra = null;
@@ -164,16 +171,19 @@ public class MatchingRecognition extends Activity {
     public void toGreyScale(Bitmap bmpOriginal)
     {
         bmpGrayscale = Bitmap.createBitmap(360, 360,Bitmap.Config.ARGB_8888);
-        if(bmpOriginal != null && !bmpOriginal.isRecycled()) {
-            canGray = new Canvas(bmpGrayscale);
+        canGray = new Canvas(bmpGrayscale);
 
-            Paint paint = new Paint();
-            ColorMatrix cm = new ColorMatrix();
-            cm.setSaturation(0);
-            ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
-            paint.setColorFilter(f);
-            canGray.drawBitmap(bmpOriginal, new Rect(0, 0, bmpOriginal.getWidth(), bmpOriginal.getHeight()), new Rect(0, 0, 360, 360), paint);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        while (true)
+        {
+            if (bmpOriginal != null && !bmpOriginal.isRecycled())
+                break;
         }
+            canGray.drawBitmap(bmpOriginal, new Rect(0, 0, bmpOriginal.getWidth(), bmpOriginal.getHeight()), new Rect(0, 0, 360, 360), paint);
 //        canGray.drawBitmap(bmpOriginal, new Rect(140,0,500,360),new Rect(0,0,360,360), paint);
 
         //bmpGrayscale.setPixel(0,0, bmpOriginal.getPixel(0,0)    );
@@ -237,6 +247,7 @@ public class MatchingRecognition extends Activity {
     //Funzione utile per il debug senza drone
     public void FakeTakeFromMemory()
     {
-        bmpGrayscale = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Pictures/Smart Patroling BW/chicco2.jpeg");
+        int[] i = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        bmpGrayscale = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Pictures/Smart Patroling BW/lazza" + i[this.i++] + ".jpeg");
     }
 }

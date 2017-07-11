@@ -18,7 +18,7 @@ import Jama.Matrix;
 public class Algorithm extends Activity {
 
     private static final String IMAGE_BW_DIRECTORY_NAME = "Smart Patroling BW";
-    private int numberOfImages = new File(Environment.getExternalStorageDirectory()+"/Pictures/" + IMAGE_BW_DIRECTORY_NAME).listFiles().length;
+    public int numberOfImages = new File(Environment.getExternalStorageDirectory()+"/Pictures/" + IMAGE_BW_DIRECTORY_NAME).listFiles().length;
     private static final int RES = 129600;
     private String[] fileNames = new File(Environment.getExternalStorageDirectory()+ "/Pictures/" + IMAGE_BW_DIRECTORY_NAME).list();
     private float[][] matrixOfImages = new float[RES][numberOfImages];
@@ -30,7 +30,7 @@ public class Algorithm extends Activity {
     double[][] distance=null;
     private float[] avgImage=null;
     private double[][] eigenFace;
-    public float minDist = 100; //inizializzo la distanza a 100: valore sicuramente oltre la distanza euclidea
+    public float minDist;
 
 
     // array of supported extensions (use a List if you prefer)
@@ -90,14 +90,14 @@ public class Algorithm extends Activity {
         recylingBitmap(bmpGreyScale);
         //sottraggo la media delle immagini nel database all'immagine
         SubtractMean(imageArray, avgImage);
-        avgImage = null;
+//        avgImage = null;
         //calcolo coefficienti associati all'immagine
         ComputeCoeffEigenFace(eigenFace, imageArray);
-        eigenFace = null;
-        imageArray = null;
+//        eigenFace = null;
+//        imageArray = null;
         int index = FindMinEuclideanDistance(coeff, coeffEigFace, threshold);
         coeff = null;
-        coeffEigFace = null;
+//        coeffEigFace = null;
         if(index != -1)
         {
             return fileNames[index];
@@ -320,6 +320,7 @@ public class Algorithm extends Activity {
     public int FindMinEuclideanDistance(double[] coeff, double[][] coeffEigFace, float threshold)
     {
         double tempDist = 0;
+        minDist = 100; //inizializzo la distanza a 100: valore sicuramente oltre la distanza euclidea
         int index = -1; // se index = -1 nessuna immagine corrisponde, quindi non riconosco nessuna faccia
         double[][] EucDist = ComputeDistance(coeff, coeffEigFace);
         //calcolo la distanza euclidea

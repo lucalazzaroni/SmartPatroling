@@ -300,7 +300,12 @@ public class SavePhotoTraining extends Activity {
         int bmpFormat = bmpOriginal.getWidth() - bmpOriginal.getHeight();
         int topCut = (int)(bmpFormat * 0.4);
         int bottomCut = (int)(bmpFormat * 0.6);
-        canGray.drawBitmap(rotatedBitmap, new Rect(0,topCut,bmpOriginal.getHeight(), bmpOriginal.getWidth() - bottomCut), new Rect(0,0,360,360), paint);
+        while (true)
+        {
+            if (rotatedBitmap != null && !rotatedBitmap.isRecycled())
+                break;
+        }
+            canGray.drawBitmap(rotatedBitmap, new Rect(0,topCut,bmpOriginal.getHeight(), bmpOriginal.getWidth() - bottomCut), new Rect(0,0,360,360), paint);
         paint=null;
 
         return bmpGrayscale;
