@@ -1,6 +1,8 @@
 package com.example.hew15j040el.smartpatroling;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -69,21 +71,24 @@ public class MatchingRecognition extends Activity {
 //            byteArray = null;
 //            bmpGrayscale = toGreyScale(imgBitmap);
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        try
+        {
             algorithm = new Algorithm();
             algorithm.Detection(Settings.percentage);
             String fileName = algorithm.Recognize(Settings.distance, bmpGrayscale);
             Toast.makeText(getApplicationContext(), "Distance: " + algorithm.minDist, Toast.LENGTH_LONG).show();
-            if(fileName != null)
-            {
+
+
+            if (fileName != null) {
                 trainingBmp = FromJpegToBitmap(Environment.getExternalStorageDirectory() + "/Pictures/" + IMAGE_DIRECTORY_NAME + "/" + fileName);
                 Matrix rotate = new Matrix();
                 rotate.preRotate(90);
                 //ritaglio in modo diverso a seconda del formato della foto
                 int bmpFormat = trainingBmp.getWidth() - trainingBmp.getHeight();
-                int topCut = (int)(bmpFormat * 0.4);
-                int bottomCut = (int)(bmpFormat * 0.6);
-                rotatedBitmap = Bitmap.createBitmap(trainingBmp,topCut,0,trainingBmp.getWidth()-bottomCut-topCut,trainingBmp.getHeight(),rotate,true);
-                rotate=null;
+                int topCut = (int) (bmpFormat * 0.4);
+                int bottomCut = (int) (bmpFormat * 0.6);
+                rotatedBitmap = Bitmap.createBitmap(trainingBmp, topCut, 0, trainingBmp.getWidth() - bottomCut - topCut, trainingBmp.getHeight(), rotate, true);
+                rotate = null;
 
 //                rotatedBitmap = Bitmap.createBitmap(trainingBmp,0,0,trainingBmp.getWidth(),trainingBmp.getHeight(),rotate,true);
 
@@ -101,6 +106,21 @@ public class MatchingRecognition extends Activity {
 
             //metto in imgRec l'immagine scattata nella TakePhotoRecognition
             imgRec.setImageBitmap(imgBitmap);
+        }
+        catch (OutOfMemoryError oome)
+        {
+            AlertDialog alertDialog = new AlertDialog.Builder(MatchingRecognition.this).create();
+            alertDialog.setTitle("Not enough memory!");
+            alertDialog.setMessage("You have too much photos in the training set, please delete some");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finishAffinity(); //chiudi l'app in seguito all'outOfMemoryError
+                        }
+                    });
+            alertDialog.show();
+        }
 //        }
         bttHome.setOnClickListener(new View.OnClickListener() {
 
