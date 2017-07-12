@@ -1,4 +1,4 @@
-package com.example.hew15j040el.smartpatroling;
+package com.example.hew15j040el.smartpatroling.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.example.hew15j040el.smartpatroling.R;
 
 import java.io.IOException;
 

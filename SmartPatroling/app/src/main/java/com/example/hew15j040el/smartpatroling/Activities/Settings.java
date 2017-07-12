@@ -1,4 +1,4 @@
-package com.example.hew15j040el.smartpatroling;
+package com.example.hew15j040el.smartpatroling.Activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.example.hew15j040el.smartpatroling.R;
 
 /**
  * Created by HEW15J040EL on 07/07/2017.

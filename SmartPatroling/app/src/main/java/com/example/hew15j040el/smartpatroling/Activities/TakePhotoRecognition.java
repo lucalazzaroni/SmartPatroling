@@ -1,4 +1,4 @@
-package com.example.hew15j040el.smartpatroling;
+package com.example.hew15j040el.smartpatroling.Activities;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -6,24 +6,14 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import com.example.hew15j040el.smartpatroling.Methods.PhotoSaver;
+import com.example.hew15j040el.smartpatroling.R;
 
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;

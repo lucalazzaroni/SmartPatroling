@@ -1,4 +1,4 @@
-package com.example.hew15j040el.smartpatroling;
+package com.example.hew15j040el.smartpatroling.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.example.hew15j040el.smartpatroling.R;
 
 /**
  * Created by HEW15J040EL on 29/05/2017.

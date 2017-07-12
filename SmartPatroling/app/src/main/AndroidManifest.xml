@@ -20,7 +20,7 @@
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".Activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MatchingRecognition">
+        <activity android:name=".Activities.MatchingRecognition">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,7 +38,7 @@
         </activity>
 
         <activity android:windowSoftInputMode="adjustResize"
-            android:name=".SavePhotoTraining"
+            android:name=".Activities.SavePhotoTraining"
 
 
 
@@ -54,7 +54,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".TakePhotoRecognition">
+        <activity android:name=".Activities.TakePhotoRecognition">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
@@ -62,7 +62,7 @@
         </intent-filter>
     </activity>
 
-        <activity android:name=".WelcomeActivity"
+        <activity android:name=".Activities.WelcomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         <intent-filter>
@@ -72,7 +72,7 @@
         </intent-filter>
     </activity>
 
-        <activity android:name=".SwipeActivity"
+        <activity android:name=".Activities.SwipeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -82,7 +82,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Settings"
+        <activity android:name=".Activities.Settings"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

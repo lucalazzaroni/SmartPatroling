@@ -1,4 +1,4 @@
-package com.example.hew15j040el.smartpatroling;
+package com.example.hew15j040el.smartpatroling.Methods;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
