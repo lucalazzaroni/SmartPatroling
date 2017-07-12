@@ -3,13 +3,13 @@
     <string name="HowToUse">
         Smart Patroling tries to recognize a face, given a database of faces, through drone camera.\n
         There are two main sections:\n
-        -Training allows you to take the photos with your phone camera and save them in memory(../Pictures/Smart Patroling)\n
-        -Recognition allows you to take a photo with drone camera, compare it to those that are in memory and finally shows the photo
+        • Training allows you to take the photos with your phone camera and save them in memory(../Pictures/Smart Patroling)\n
+        • Recognition allows you to take a photo with drone camera, compare it to those that are in memory and finally shows the photo
         that better match with it.\n
         Settings has two adjustable parameters that aim to improve the precision and/or performance of the App.\n\n
 
         Advice:
-        to maximize matching, the phone camera has to take 1:1 format photo, background of photos has to be uniform, condition
+        to maximize matching, the phone external camera has to take 1:1 format photo, background of photos has to be uniform, condition
         of light has to be constant during Training and Recognition.\n\n
         F la\n
         A ndre\n

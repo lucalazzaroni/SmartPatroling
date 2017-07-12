@@ -2,7 +2,7 @@
 <resources>
     <string name="settingsHint">
         These two parameters are useful to setup the recognition algorithm.\n\n
-        By lowering precision you can obtain a faster identification, but the more the percentage is lowered, the more the probability of error increases.\n\n
-        At a high threshold corresponds almost always a recognition, sometimes even wrong. If this is lowered, the subject is more likely to be recognized correctly, but only if the picture is very similar to the corresponding training set.
+        • By lowering precision you can obtain a faster identification, but the more the percentage is lowered, the more the probability of error increases.\n\n
+        • At a high threshold corresponds almost always a recognition, sometimes even wrong. If this is lowered, the subject is more likely to be recognized correctly, but only if the picture is very similar to the corresponding training set.
     </string>
 </resources>

@@ -117,8 +117,8 @@ public class MatchingRecognition extends Activity {
         catch (OutOfMemoryError oome)
         {
             AlertDialog alertDialog = new AlertDialog.Builder(MatchingRecognition.this).create();
-            alertDialog.setTitle("Not enough memory!");
-            alertDialog.setMessage("You have too much photos in the training set, please delete some");
+            alertDialog.setTitle("Not enough memory");
+            alertDialog.setMessage("You have too much photos in the training set, please delete some!");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {

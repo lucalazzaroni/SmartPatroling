@@ -27,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textDistance = (TextView)  findViewById(R.id.textDistance);
-        textDistance.setText("Current threshold: " + (int)(Settings.distance));
+        textDistance.setText("Threshold: " + (int)(Settings.distance));
         textPercentage = (TextView)  findViewById(R.id.textPercentage);
-        textPercentage.setText("Current precision: " + (int)(Settings.percentage * 100) + "%");
+        textPercentage.setText("Precision: " + (int)(Settings.percentage * 100) + "%");
         bttTraining =(Button)findViewById(R.id.bttTraining);
         bttRecognition =(Button)findViewById(R.id.bttRecognition);
         bttSwipe = (Button)findViewById(R.id.bttswipe);
