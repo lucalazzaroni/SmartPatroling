@@ -57,14 +57,14 @@
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_gravity="center_horizontal"
-        android:backgroundTint="@color/transparent"
+        android:background = "@null"
         android:scaleType="fitCenter"
         android:src="@drawable/settings"
         android:layout_above="@+id/bttswipe"
         android:layout_alignParentEnd="true" />
 
     <Button
-        android:drawableRight="@drawable/upp"
+        android:drawableRight="@drawable/uparrow"
         android:textSize ="20dp"
         android:text="How to use..."
         android:id="@+id/bttswipe"
