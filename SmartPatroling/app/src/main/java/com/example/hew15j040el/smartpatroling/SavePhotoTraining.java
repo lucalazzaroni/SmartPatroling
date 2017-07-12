@@ -7,7 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -81,9 +83,24 @@ public class SavePhotoTraining extends Activity {
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         //aprire la fotocamera
 //        context = getApplicationContext();
-
-        launchCamera();
-
+        try
+        {
+            launchCamera();
+        }
+        catch (OutOfMemoryError oome)
+        {
+            AlertDialog alertDialog = new AlertDialog.Builder(SavePhotoTraining.this).create();
+            alertDialog.setTitle("Not enough memory");
+            alertDialog.setMessage("The App needs more memory to work!");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finishAffinity(); //chiudi l'app in seguito all'outOfMemoryError
+                        }
+                    });
+            alertDialog.show();
+        }
 //        Intent camera = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 //        startActivityForResult(camera,0);
 

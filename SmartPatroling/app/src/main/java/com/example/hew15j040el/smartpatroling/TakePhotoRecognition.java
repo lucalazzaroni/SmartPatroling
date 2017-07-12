@@ -1,7 +1,9 @@
 package com.example.hew15j040el.smartpatroling;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -51,44 +53,45 @@ public class TakePhotoRecognition extends Activity {
 
         if (!LibsChecker.checkVitamioLibs(this))
             return;
+        try
+        {
+            setContentView(R.layout.take_photo_recognition);
 
-        setContentView(R.layout.take_photo_recognition);
+            context = getApplicationContext();
+            myVideoView = (VideoView) findViewById(R.id.vitamio_videoView);
+            myVideoView.setVideoQuality(MediaPlayer.VIDEOQUALITY_HIGH);
+            myVideoView.setBufferSize(4096);
+            myVideoView.setVideoPath(PATH);
+            myVideoView.requestFocus();
+            myVideoView.setMediaController(new MediaController(this));
+            myVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_STRETCH, 0);
 
-        context = getApplicationContext();
-        myVideoView = (VideoView) findViewById(R.id.vitamio_videoView);
-        myVideoView.setVideoQuality(MediaPlayer.VIDEOQUALITY_HIGH);
-        myVideoView.setBufferSize(4096);
-        myVideoView.setVideoPath(PATH);
-        myVideoView.requestFocus();
-        myVideoView.setMediaController(new MediaController(this));
-        myVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_STRETCH, 0);
+            myVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mediaPlayer.setPlaybackSpeed(1.0f);
+                }
+            });
 
-        myVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                mediaPlayer.setPlaybackSpeed(1.0f);
-            }
-        });
+            bttTakeDronePhoto = (Button) findViewById(R.id.bttTakeDronePhoto);
 
-        bttTakeDronePhoto = (Button)findViewById(R.id.bttTakeDronePhoto);
+            bttTakeDronePhoto.setOnClickListener(new View.OnClickListener() {
 
-        bttTakeDronePhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-            @Override
-            public void onClick(View v) {
-
-                tonoMP.start();
-                Log.i(TAG, "setOnClickListener");
+                    tonoMP.start();
+                    Log.i(TAG, "setOnClickListener");
 
 //trasforma la foto in memoria "/Pictures/Drone Pictures/Fakebianconero.jpeg" in una ritagliata e in bianco e nero
 //                FakePhotoDrone();
 
 
-                capturePhoto(null);
+                    capturePhoto(null);
 
-                Intent imr = new Intent(getApplicationContext(), MatchingRecognition.class);
+                    Intent imr = new Intent(getApplicationContext(), MatchingRecognition.class);
 
-                //Convert to byte array
+                    //Convert to byte array
 //                if(imgBitmap!=null) {
 //                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
 //                    imgBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -96,10 +99,24 @@ public class TakePhotoRecognition extends Activity {
 //                }
 
 
-                startActivity(imr);
-            }
-        });
-
+                    startActivity(imr);
+                }
+            });
+        }
+        catch (OutOfMemoryError oome)
+        {
+            AlertDialog alertDialog = new AlertDialog.Builder(TakePhotoRecognition.this).create();
+            alertDialog.setTitle("Not enough memory");
+            alertDialog.setMessage("The App needs more memory to work!");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finishAffinity(); //chiudi l'app in seguito all'outOfMemoryError
+                        }
+                    });
+            alertDialog.show();
+        }
     }
     private void capturePhoto(View v){
         try {
