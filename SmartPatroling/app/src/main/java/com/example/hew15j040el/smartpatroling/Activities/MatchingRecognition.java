@@ -2,30 +2,36 @@ package com.example.hew15j040el.smartpatroling.Activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.hew15j040el.smartpatroling.Methods.ImageProcessing;
-import com.example.hew15j040el.smartpatroling.Methods.Algorithm;
-import com.example.hew15j040el.smartpatroling.R;
-import com.example.hew15j040el.smartpatroling.Methods.StorageInteraction;
 
+import com.example.hew15j040el.smartpatroling.AsyncTask.AlgorithmEnded;
+import com.example.hew15j040el.smartpatroling.AsyncTask.BackgroundTask;
+import com.example.hew15j040el.smartpatroling.Libraries.ImageProcessing;
+import com.example.hew15j040el.smartpatroling.Libraries.Algorithm;
+import com.example.hew15j040el.smartpatroling.R;
+import com.example.hew15j040el.smartpatroling.Libraries.StorageInteraction;
 import java.io.File;
 
 /**
  * Created by HEW15J040EL on 10/05/2017.
  */
 
-public class MatchingRecognition extends Activity {
+public class MatchingRecognition extends Activity implements AlgorithmEnded {
 
     ImageButton bttHome;
     Button bttContinueRec;
@@ -37,11 +43,14 @@ public class MatchingRecognition extends Activity {
     Canvas canGray = null;
     Bitmap rotatedBitmap = null;
     Bitmap trainingBmp = null;
+    String fileName = null;
 //    private static final String IMAGE_DIRECTORY_NAME = "Smart Patroling";
-    private static Algorithm algorithm;
+//    public static Algorithm algorithm;
     static int numberOfImages = -1; //numero di immagini non possibile
     static float percentage = -1; //percentuale non possibile
     static int i = 0; //per debug
+    ProgressDialog progress = null;
+    private AlgorithmEnded AE = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,60 +62,65 @@ public class MatchingRecognition extends Activity {
         name = (TextView)  findViewById(R.id.name);
         name.setText("Unknown");
         bttHome = (ImageButton)findViewById(R.id.bttHome);
-
+        AE = this;
+        progress = new ProgressDialog(this);
         //prendo la bitmap dell'immagine scattata nella TakePhotoRecognition
 //        if(getIntent().hasExtra("imageByteArray")) {
 //            byte[] byteArray = getIntent().getByteArrayExtra("imageByteArray");
 //            imgBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         //ritaglio la bitmap del drone per vederla quadrata(siccome ritaglio la sessa immagine dove salvo la terza misura è 360 perchè non parte da 0 ma dal 140
-
-        bmpGrayscale = StorageInteraction.FakeTakeFromMemory(i++);//utilizzare l'app con foto del training anziche del drone
-//        bmpGrayscale = StorageInteraction.TakeFromMemory(imgBitmap, bmpGrayscale, canGray);
-
-//            byteArray = null;
-//            bmpGrayscale = toGreyScale(imgBitmap);
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////
         try
         {
-//            algorithm = new Algorithm();
-            //se il training set non cambia utilizzo le stesse autofacce di prima senza ricalcolare
-            float currentPercentage = Settings.percentage;
-            int currentNumberOfImages = new File(Environment.getExternalStorageDirectory()+"/Pictures/Smart Patroling BW").listFiles().length;;
-            if(currentNumberOfImages != numberOfImages || currentPercentage != percentage)
-            {
-                percentage = currentPercentage;
-                numberOfImages = currentNumberOfImages;
-                algorithm = new Algorithm();
-                algorithm.Detection(Settings.percentage);
-            }
-            String fileName = algorithm.Recognize(Settings.distance, bmpGrayscale);
-            Toast.makeText(getApplicationContext(), "Distance: " + algorithm.minDist, Toast.LENGTH_LONG).show();
+//            bmpGrayscale = StorageInteraction.FakeTakeFromMemory(i++);//utilizzare l'app con foto del training anziche del drone
+            imgBitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Pictures/Drone Pictures/tempdrone.jpeg");
+            imgBitmap = Bitmap.createBitmap(imgBitmap, 140, 0, 360, 360, null, true);
+
+            new BackgroundTask(getApplicationContext(), imgBitmap, progress, AE, name, imgTra).execute();
 
 
-            if (fileName != null) {
-//                trainingBmp = StorageInteraction.FromJpegToBitmap(Environment.getExternalStorageDirectory() + "/Pictures/" + IMAGE_DIRECTORY_NAME + "/" + fileName);
-//                Matrix rotate = new Matrix();
-//                rotate.preRotate(90);
-//                //ritaglio in modo diverso a seconda del formato della foto
-//                int bmpFormat = trainingBmp.getWidth() - trainingBmp.getHeight();
-//                int topCut = (int) (bmpFormat * 0.4);
-//                int bottomCut = (int) (bmpFormat * 0.6);
-//                rotatedBitmap = Bitmap.createBitmap(trainingBmp, topCut, 0, trainingBmp.getWidth() - bottomCut - topCut, trainingBmp.getHeight(), rotate, true);
-//                rotate = null;
+//            bmpGrayscale = StorageInteraction.TakeFromMemory(imgBitmap, bmpGrayscale, canGray);
+//            float currentPercentage = Settings.percentage;
+//            int currentNumberOfImages = new File(Environment.getExternalStorageDirectory() + "/Pictures/Smart Patroling BW").listFiles().length;
+//
+//            if (currentNumberOfImages != numberOfImages || currentPercentage != percentage) {
+//                percentage = currentPercentage;
+//                numberOfImages = currentNumberOfImages;
+//                algorithm = new Algorithm();
+////                new BackgroundTask(progress).execute();
+//                algorithm.Detection(Settings.percentage);
+////                while (!isFinished){} //aspetto l'esecuzione dell'asynctask
+//            }
+//
+//            String fileName = algorithm.Recognize(Settings.distance, bmpGrayscale);
 
-//                rotatedBitmap = Bitmap.createBitmap(trainingBmp,0,0,trainingBmp.getWidth(),trainingBmp.getHeight(),rotate,true);
+//            Toast.makeText(getApplicationContext(), "Distance: " + algorithm.minDist, Toast.LENGTH_LONG).show();
 
-//                canGray  = new Canvas(rotatedBitmap);
-//                canGray.drawBitmap(trainingBmp,new Rect(0,0,1600,1200), new Rect(), null);
 
-                //funziona per l immagine girata a sx rispetto ad una dritta
-//        canGray.drawBitmap(bmpOriginal, new Rect(200,0,1400,1200),new Rect(0,0,360,360), paint);
-                // funziona con l immagine dritta
-//                canGray.drawBitmap(rotatedBitmap, new Rect(0,150,1200,1350),new Rect(0,0,360,360), null);
-                imgTra.setImageBitmap(ImageProcessing.CutTo360x360(trainingBmp, fileName));
-//                imgTra.setImageBitmap(rotatedBitmap);
-                name.setText(fileName);
-            }
+
+//            if (fileName != null) {
+////                trainingBmp = StorageInteraction.FromJpegToBitmap(Environment.getExternalStorageDirectory() + "/Pictures/" + IMAGE_DIRECTORY_NAME + "/" + fileName);
+////                Matrix rotate = new Matrix();
+////                rotate.preRotate(90);
+////                //ritaglio in modo diverso a seconda del formato della foto
+////                int bmpFormat = trainingBmp.getWidth() - trainingBmp.getHeight();
+////                int topCut = (int) (bmpFormat * 0.4);
+////                int bottomCut = (int) (bmpFormat * 0.6);
+////                rotatedBitmap = Bitmap.createBitmap(trainingBmp, topCut, 0, trainingBmp.getWidth() - bottomCut - topCut, trainingBmp.getHeight(), rotate, true);
+////                rotate = null;
+//
+////                rotatedBitmap = Bitmap.createBitmap(trainingBmp,0,0,trainingBmp.getWidth(),trainingBmp.getHeight(),rotate,true);
+//
+////                canGray  = new Canvas(rotatedBitmap);
+////                canGray.drawBitmap(trainingBmp,new Rect(0,0,1600,1200), new Rect(), null);
+//
+//                //funziona per l immagine girata a sx rispetto ad una dritta
+////                  canGray.drawBitmap(bmpOriginal, new Rect(200,0,1400,1200),new Rect(0,0,360,360), paint);
+//                // funziona con l immagine dritta
+////                canGray.drawBitmap(rotatedBitmap, new Rect(0,150,1200,1350),new Rect(0,0,360,360), null);
+//                imgTra.setImageBitmap(ImageProcessing.CutTo360x360(trainingBmp, fileName));
+////                imgTra.setImageBitmap(rotatedBitmap);
+//                name.setText(fileName);
+//            }
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //metto in imgRec l'immagine scattata nella TakePhotoRecognition
@@ -149,12 +163,18 @@ public class MatchingRecognition extends Activity {
     }
 
     @Override
+    public void onAlgorithmEnd(String fileName, Bitmap imgBm) {
+        name.setText(fileName);
+        imgTra.setImageBitmap(imgBm);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
 
         if(imgBitmap != null && !imgBitmap.isRecycled())
             recyclingCanvas(canGray);
-
+//
         recylingBitmap(bmpGrayscale);
         recylingBitmap(imgBitmap);
 

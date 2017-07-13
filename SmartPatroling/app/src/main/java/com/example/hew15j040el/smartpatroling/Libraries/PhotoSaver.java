@@ -1,4 +1,4 @@
-package com.example.hew15j040el.smartpatroling.Methods;
+package com.example.hew15j040el.smartpatroling.Libraries;
 
 /**
  * Created by HEW15J040EL on 12/05/2017.
@@ -6,12 +6,6 @@ package com.example.hew15j040el.smartpatroling.Methods;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -20,7 +14,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
 
 import io.vov.vitamio.MediaPlayer;
 

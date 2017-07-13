@@ -1,7 +1,8 @@
-package com.example.hew15j040el.smartpatroling.Methods;
+package com.example.hew15j040el.smartpatroling.Libraries;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -17,6 +18,7 @@ import android.os.Environment;
 public class ImageProcessing extends Activity {
 
     private static final String IMAGE_DIRECTORY_NAME = "Smart Patroling";
+    private static final int RES = 129600;
 
     public static Bitmap toGreyScale(Bitmap bmpOriginal, Bitmap bmpGrayscale, Canvas canGray)
     {
@@ -42,9 +44,9 @@ public class ImageProcessing extends Activity {
         return bmpGrayscale;
     }
 
-    public static Bitmap CutTo360x360(Bitmap trainingBmp, String fileName)
+    public static Bitmap CutTo360x360(String fileName)
     {
-        trainingBmp = StorageInteraction.FromJpegToBitmap(Environment.getExternalStorageDirectory() + "/Pictures/" + IMAGE_DIRECTORY_NAME + "/" + fileName);
+        Bitmap trainingBmp = StorageInteraction.FromJpegToBitmap(Environment.getExternalStorageDirectory() + "/Pictures/" + IMAGE_DIRECTORY_NAME + "/" + fileName);
         Matrix rotate = new Matrix();
         rotate.preRotate(90);
         //ritaglio in modo diverso a seconda del formato della foto
@@ -90,6 +92,61 @@ public class ImageProcessing extends Activity {
         paint = null;
 
         return bmpGrayscale;
+    }
+
+    //convertire la bitmap in un array
+
+    public static float[] FromBitmapToArray(Bitmap bmp, float[] imageArray)
+    {
+        for (int r = 0; r < 360; r++) {
+            for (int c = 0; c < 360; c++) {
+                imageArray[c + 360 * r] = bmp.getPixel(c, r) & 0x000000FF; //maschera per considerare un solo byte tanto R G e B sono uguali essendo immagine in b/n
+            }
+        }
+        return imageArray;
+    }
+
+    public static float[] FromJpegToArray (String _filepath, float[] imageArray)
+    {
+        return FromBitmapToArray (BitmapFactory.decodeFile (_filepath), imageArray);
+    }
+
+    public static float[] AverageImage(float[][] images, float[] avgImage, int numberOfImages)
+    {
+        float[] sumImage = new float[RES];
+        for(int row = 0; row < RES; row++)
+        {
+            for(int col = 0; col < numberOfImages; col++)
+            {
+                sumImage[row] += images[row][col];
+            }
+        }
+        for(int k = 0; k < RES; k++) {
+            avgImage[k] = sumImage[k] / numberOfImages;
+        }
+        sumImage = null;
+        return avgImage;
+    }
+
+    public static float[][] SubtractMeanOfAllImages(float[][] images, float[] avg, int numberOfImages)
+    {
+        for (int c = 0; c < numberOfImages; c++)
+        {
+            for(int r = 0; r < RES; r++)
+            {
+                images[r][c]= images[r][c]-avg[r];
+            }
+        }
+        return images;
+    }
+
+    public static float[] SubtractMean(float[] singleImg, float[] avg)
+    {
+        for(int j=0;j<RES;j++)
+        {
+            singleImg[j]= singleImg[j]-avg[j];
+        }
+        return singleImg;
     }
 
 

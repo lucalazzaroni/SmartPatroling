@@ -1,4 +1,4 @@
-package com.example.hew15j040el.smartpatroling.Methods;
+package com.example.hew15j040el.smartpatroling.Libraries;
 
 import android.app.Activity;
 import android.content.Context;
@@ -34,9 +34,9 @@ public class StorageInteraction extends Activity {
     public static Bitmap TakeFromMemory(Bitmap imgBitmap, Bitmap bmpGrayscale, Canvas canGray)
     {
         //recupero immagine scattata col drone dalla memoria
-        imgBitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Pictures/Drone Pictures/tempdrone.jpeg");
+//        imgBitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Pictures/Drone Pictures/tempdrone.jpeg");
         //taglio
-        imgBitmap = Bitmap.createBitmap(imgBitmap, 140, 0, 360, 360, null, true);
+//        imgBitmap = Bitmap.createBitmap(imgBitmap, 140, 0, 360, 360, null, true);
         //converto in bianco e nero
         bmpGrayscale = ImageProcessing.toGreyScale(imgBitmap, bmpGrayscale, canGray);
 
@@ -123,8 +123,8 @@ public class StorageInteraction extends Activity {
 
 
 
-    public static boolean SaveNormalAndBW(EditText writename, Context context, Bitmap rotatedBitmap,
-                                          Bitmap bitmap, Bitmap bmpGrayscale, Canvas canGray, File mediaFile)
+    public static boolean SaveColorAndBW(EditText writename, Context context, Bitmap rotatedBitmap,
+                                         Bitmap bitmap, Bitmap bmpGrayscale, Canvas canGray, File mediaFile)
     {
         String _writename = writename.getText().toString() + ".jpeg";
 
@@ -149,7 +149,7 @@ public class StorageInteraction extends Activity {
             Toast.makeText(context, "Picture saved", Toast.LENGTH_SHORT).show();
         }
 
-        Uri fileUri = Uri.fromFile(to); //percorso del file rinominato
+//        Uri fileUri = Uri.fromFile(to); //percorso del file rinominato
 //                BitmapFactory.Options optionsIm = new BitmapFactory.Options();
 //                bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
 //                        optionsIm);

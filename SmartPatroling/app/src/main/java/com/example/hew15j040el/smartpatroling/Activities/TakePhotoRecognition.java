@@ -10,9 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.hew15j040el.smartpatroling.Methods.PhotoSaver;
+import com.example.hew15j040el.smartpatroling.Libraries.PhotoSaver;
 import com.example.hew15j040el.smartpatroling.R;
 
 import io.vov.vitamio.LibsChecker;
@@ -34,6 +35,7 @@ public class TakePhotoRecognition extends Activity {
 //    private String imgpath = null;
     private Bitmap imgBitmap = null;
     private PhotoSaver ps;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

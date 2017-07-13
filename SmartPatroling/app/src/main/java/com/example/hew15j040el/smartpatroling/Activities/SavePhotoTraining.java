@@ -23,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hew15j040el.smartpatroling.R;
-import com.example.hew15j040el.smartpatroling.Methods.StorageInteraction;
+import com.example.hew15j040el.smartpatroling.Libraries.StorageInteraction;
 
 import static java.lang.Thread.sleep;
 
@@ -99,7 +99,7 @@ public class SavePhotoTraining extends Activity {
 
             @Override
             public void onClick(View v) {
-                if(StorageInteraction.SaveNormalAndBW(writename, getApplicationContext(),
+                if(StorageInteraction.SaveColorAndBW(writename, getApplicationContext(),
                         rotatedBitmap, bitmap, bmpGrayscale, canGray, mediaFile))
                 {
 
@@ -120,7 +120,7 @@ public class SavePhotoTraining extends Activity {
 
             @Override
             public void onClick(View v) {
-                if(StorageInteraction.SaveNormalAndBW(writename, getApplicationContext(),
+                if(StorageInteraction.SaveColorAndBW(writename, getApplicationContext(),
                         rotatedBitmap, bitmap, bmpGrayscale, canGray, mediaFile)) {
 
 //                    bitmap.recycle();

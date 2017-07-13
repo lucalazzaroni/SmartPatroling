@@ -1,13 +1,12 @@
-package com.example.hew15j040el.smartpatroling.Methods;
+package com.example.hew15j040el.smartpatroling.Libraries;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Environment;
 
 import java.io.File;
 
-import  Jama.EigenvalueDecomposition;
+import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 
 
@@ -24,11 +23,11 @@ public class Algorithm extends Activity {
     private float[][] matrixOfImages = new float[RES][numberOfImages];
     private float[] imageArray = new float[RES];
     double[][] cov = new double[numberOfImages][numberOfImages];
-    double[][] mostSigVectors =null;
+    double[][] mostSigVectors = null;
     private double[][] coeffEigFace;
-    double[] coeff=null;
-    double[][] distance=null;
-    private float[] avgImage=null;
+    double[] coeff = null;
+    double[][] distance = null;
+    private float[] avgImage = new float[RES];
     private double[][] eigenFace;
     public float minDist;
 
@@ -56,7 +55,7 @@ public class Algorithm extends Activity {
         for(int i = 0; i < numberOfImages; i++)
         {
             //trasformo tutte le immagini in array
-            FromJpegToArray (Environment.getExternalStorageDirectory()+ "/Pictures/" + IMAGE_BW_DIRECTORY_NAME + "/" + fileNames[i]);
+            ImageProcessing.FromJpegToArray (Environment.getExternalStorageDirectory()+ "/Pictures/" + IMAGE_BW_DIRECTORY_NAME + "/" + fileNames[i], imageArray);
 
             for(int j = 0; j < RES; j++)
             {
@@ -64,12 +63,12 @@ public class Algorithm extends Activity {
             }
         }
         //calcolo la matrice media
-        AverageImage(matrixOfImages);
+        avgImage = ImageProcessing.AverageImage(matrixOfImages, new float[RES], numberOfImages);
 //        Bitmap eigenFaceBM = ArrayToBitmap(matrixOfImages, 2);
         //sottraggo la media
-        SubtractMeanOfAllImages(matrixOfImages, avgImage);
+        matrixOfImages = ImageProcessing.SubtractMeanOfAllImages(matrixOfImages, avgImage, numberOfImages);
         //calcolo matrice di covarianza
-        Covariance(matrixOfImages);
+        cov = MatProcessing.Covariance(matrixOfImages, numberOfImages, cov);
         //calcolo autovettori associati agli autovalori più significativi
         FindSignificantEigenVectors(cov, percentage);
         cov = null;
@@ -86,10 +85,10 @@ public class Algorithm extends Activity {
     public String Recognize(float threshold, Bitmap bmpGreyScale)
     {
         //metto immagine b/n in un array
-        FromBitmapToArray(bmpGreyScale);
+        ImageProcessing.FromBitmapToArray(bmpGreyScale, imageArray);
         recylingBitmap(bmpGreyScale);
         //sottraggo la media delle immagini nel database all'immagine
-        SubtractMean(imageArray, avgImage);
+        imageArray = ImageProcessing.SubtractMean(imageArray, avgImage);
 //        avgImage = null;
         //calcolo coefficienti associati all'immagine
         ComputeCoeffEigenFace(eigenFace, imageArray);
@@ -110,86 +109,86 @@ public class Algorithm extends Activity {
 
 
 
-    //convertire la bitmap in un array
-
-    public void FromBitmapToArray(Bitmap bmp)
-    {
-        for (int r = 0; r < 360; r++)
-        {
-            for(int c = 0; c < 360; c++)
-            {
-                imageArray[c + 360*r] = bmp.getPixel(c,r) & 0x000000FF; //maschera per considerare un solo byte tanto R G e B sono uguali essendo immagine in b/n
-            }
-        }
-    }
+//    //convertire la bitmap in un array
+//
+//    public void FromBitmapToArray(Bitmap bmp)
+//    {
+//        for (int r = 0; r < 360; r++)
+//        {
+//            for(int c = 0; c < 360; c++)
+//            {
+//                imageArray[c + 360*r] = bmp.getPixel(c,r) & 0x000000FF; //maschera per considerare un solo byte tanto R G e B sono uguali essendo immagine in b/n
+//            }
+//        }
+//    }
 
     //convertire da jpeg a array
 
-    public void FromJpegToArray (String _filepath)
-    {
-        FromBitmapToArray (BitmapFactory.decodeFile (_filepath));
-    }
+//    public void FromJpegToArray (String _filepath)
+//    {
+//        imageArray = ImageProcessing.FromBitmapToArray (BitmapFactory.decodeFile (_filepath), imageArray);
+//    }
 
 
-    public void AverageImage(float[][] images)
-    {
-        avgImage=new float[RES];
-        float[] sumImage=new float[RES];
-        for(int row = 0; row < RES; row++)
-        {
-            for(int col = 0; col < numberOfImages; col++)
-            {
-                sumImage[row] += images[row][col];
-            }
-        }
-        for(int k = 0; k < RES; k++) {
-            avgImage[k] = sumImage[k] / numberOfImages;
-        }
-        sumImage = null;
-    }
+//    public void AverageImage(float[][] images)
+//    {
+//        avgImage=new float[RES];
+//        float[] sumImage=new float[RES];
+//        for(int row = 0; row < RES; row++)
+//        {
+//            for(int col = 0; col < numberOfImages; col++)
+//            {
+//                sumImage[row] += images[row][col];
+//            }
+//        }
+//        for(int k = 0; k < RES; k++) {
+//            avgImage[k] = sumImage[k] / numberOfImages;
+//        }
+//        sumImage = null;
+//    }
 
-    public void SubtractMeanOfAllImages(float[][] images, float[] avg)
-    {
-        for (int c = 0; c < numberOfImages; c++)
-        {
-            for(int r = 0; r < RES; r++)
-            {
-                images[r][c]= images[r][c]-avg[r];
-            }
-        }
-    }
+//    public void SubtractMeanOfAllImages(float[][] images, float[] avg)
+//    {
+//        for (int c = 0; c < numberOfImages; c++)
+//        {
+//            for(int r = 0; r < RES; r++)
+//            {
+//                images[r][c]= images[r][c]-avg[r];
+//            }
+//        }
+//    }
 
-    public void SubtractMean(float[] singleImg, float[] avg)
-    {
-        for(int j=0;j<RES;j++)
-        {
-            singleImg[j]= singleImg[j]-avg[j];
-        }
-    }
+//    public void SubtractMean(float[] singleImg, float[] avg)
+//    {
+//        for(int j=0;j<RES;j++)
+//        {
+//            singleImg[j]= singleImg[j]-avg[j];
+//        }
+//    }
 
-    //matrice di covarianza A'A
-
-    public void Covariance(float[][] imagesLessMean)
-    {
-        for (int r = 0; r < numberOfImages; r++)
-            for (int c = 0; c < numberOfImages; c++)
-                for (int k = 0; k < RES; k++)
-                    cov[r][c] += imagesLessMean[k][r] * imagesLessMean[k][c];
-        for (int r = 0; r < cov.length; r++)
-            for(int c = 0; c < cov[0].length; c++)
-                cov[r][c] = cov[r][c] / numberOfImages;//normalizzo la covarianza
-    }
+//    //matrice di covarianza A'A
+//
+//    public void Covariance(float[][] imagesLessMean)
+//    {
+//        for (int r = 0; r < numberOfImages; r++)
+//            for (int c = 0; c < numberOfImages; c++)
+//                for (int k = 0; k < RES; k++)
+//                    cov[r][c] += imagesLessMean[k][r] * imagesLessMean[k][c];
+//        for (int r = 0; r < cov.length; r++)
+//            for(int c = 0; c < cov[0].length; c++)
+//                cov[r][c] = cov[r][c] / numberOfImages;//normalizzo la covarianza
+//    }
 
     public void FindSignificantEigenVectors(double[][] covarM, float chosenPercentage)
     {
         Matrix cov = new Matrix(covarM);
         EigenvalueDecomposition E = cov.eig();
         cov = null;
-        double[] eigValue = Diag(E.getD().getArray());
+        double[] eigValue = MatProcessing.Diag(E.getD().getArray());
         double[][] eigVector = E.getV().getArray(); //gli autovettori sono vettori colonna di eigVector
         E = null;
         //Bubblesort mi ordina autovalori e autovettori
-        BubbleSort(eigValue, eigVector);
+        eigVector = MatProcessing.BubbleSort(eigValue, eigVector, numberOfImages);
 
         float eigSum = 0;
         for(int i = 0; i < eigValue.length; i++)
@@ -216,56 +215,56 @@ public class Algorithm extends Activity {
         eigVector = null;
     }
 
-    static double[] Diag(double[][] m) {
+//    static double[] Diag(double[][] m) {
+//
+//        double[] d = new double[m.length];
+//        for (int i = 0; i< m.length; i++)
+//            d[i] = m[i][i];
+//        return d;
+//    }
 
-        double[] d = new double[m.length];
-        for (int i = 0; i< m.length; i++)
-            d[i] = m[i][i];
-        return d;
-    }
 
-
-    public void BubbleSort(double [] eigValue, double [][] eigVector) {
-        int[] index = new int[numberOfImages];
-        for(int i = 0; i < numberOfImages; i++)
-        {
-            index[i] = i;
-        }
-
-        for(int i = 0; i < eigValue.length; i++)
-        {
-            double k;
-            boolean flag = false;
-            for(int j = 0; j < eigValue.length-1; j++)
-            {
-                //Se l' elemento j e minore del successivo allora
-                //scambiamo i valori
-                if(eigValue[j]<eigValue[j+1]) {
-                    k = eigValue[j];
-                    int temp = index[j];
-                    eigValue[j] = eigValue[j+1];
-                    index[j] = index[j+1];
-                    eigValue[j+1] = k;
-                    index[j+1] = temp;
-                    flag=true; //Lo setto a true per indicare che é avvenuto uno scambio
-                }
-            }
-            if(!flag) break; //Se flag=false allora vuol dire che nell' ultima iterazione
-            //non ci sono stati scambi, quindi il metodo può terminare
-            //poiché l' array risulta ordinato
-        }
-        // ordino gli autovettori in corrispondenza degli autovalori
-        double[][] tempVector = new double[eigVector.length][eigVector[0].length];
-        for(int col = 0; col < eigVector[0].length; col++)
-        {
-            for(int row = 0; row < eigVector.length; row++)
-            {
-                tempVector[row][col] = eigVector[row][index[col]];
-            }
-        }
-        eigVector = tempVector;
-        tempVector = null;
-    }
+//    public void BubbleSort(double [] eigValue, double [][] eigVector) {
+//        int[] index = new int[numberOfImages];
+//        for(int i = 0; i < numberOfImages; i++)
+//        {
+//            index[i] = i;
+//        }
+//
+//        for(int i = 0; i < eigValue.length; i++)
+//        {
+//            double k;
+//            boolean flag = false;
+//            for(int j = 0; j < eigValue.length-1; j++)
+//            {
+//                //Se l' elemento j e minore del successivo allora
+//                //scambiamo i valori
+//                if(eigValue[j]<eigValue[j+1]) {
+//                    k = eigValue[j];
+//                    int temp = index[j];
+//                    eigValue[j] = eigValue[j+1];
+//                    index[j] = index[j+1];
+//                    eigValue[j+1] = k;
+//                    index[j+1] = temp;
+//                    flag=true; //Lo setto a true per indicare che é avvenuto uno scambio
+//                }
+//            }
+//            if(!flag) break; //Se flag=false allora vuol dire che nell' ultima iterazione
+//            //non ci sono stati scambi, quindi il metodo può terminare
+//            //poiché l' array risulta ordinato
+//        }
+//        // ordino gli autovettori in corrispondenza degli autovalori
+//        double[][] tempVector = new double[eigVector.length][eigVector[0].length];
+//        for(int col = 0; col < eigVector[0].length; col++)
+//        {
+//            for(int row = 0; row < eigVector.length; row++)
+//            {
+//                tempVector[row][col] = eigVector[row][index[col]];
+//            }
+//        }
+//        eigVector = tempVector;
+//        tempVector = null;
+//    }
 
     public void ComputeEigenFace(double[][] eigVector, float[][] imagesLessMean)
     {
@@ -296,7 +295,7 @@ public class Algorithm extends Activity {
 //        imgLessMeanM = null;
 //        eigenT = null;
 //        return eig;
-        coeffEigFace=new double[eigenFace[0].length][imagesLessMean[0].length];
+        coeffEigFace = new double[eigenFace[0].length][imagesLessMean[0].length];
         for (int i = 0; i < eigenFace[0].length ; i++)
             for (int j = 0; j <imagesLessMean[0].length; j++)
                 for (int k = 0; k < RES; k++)
@@ -322,7 +321,7 @@ public class Algorithm extends Activity {
         double tempDist = 0;
         minDist = 100; //inizializzo la distanza a 100: valore sicuramente oltre la distanza euclidea
         int index = -1; // se index = -1 nessuna immagine corrisponde, quindi non riconosco nessuna faccia
-        double[][] EucDist = ComputeDistance(coeff, coeffEigFace);
+        double[][] EucDist = MatProcessing.ComputeDistance(coeff, coeffEigFace, distance);
         //calcolo la distanza euclidea
         for(int c = 0; c < coeffEigFace[0].length; c++)
         {
@@ -342,18 +341,18 @@ public class Algorithm extends Activity {
         return index;
     }
 
-    public double[][] ComputeDistance(double[] coeff, double[][] coeffEigFace)
-    {
-        distance = new double[coeffEigFace.length][coeffEigFace[0].length];
-        for (int c = 0; c < coeffEigFace[0].length; c++)
-        {
-            for (int r = 0; r < coeffEigFace.length; r++)
-            {
-                distance[r][c] = coeff[r] - coeffEigFace[r][c];
-            }
-        }
-        return distance;
-    }
+//    public double[][] ComputeDistance(double[] coeff, double[][] coeffEigFace)
+//    {
+//        distance = new double[coeffEigFace.length][coeffEigFace[0].length];
+//        for (int c = 0; c < coeffEigFace[0].length; c++)
+//        {
+//            for (int r = 0; r < coeffEigFace.length; r++)
+//            {
+//                distance[r][c] = coeff[r] - coeffEigFace[r][c];
+//            }
+//        }
+//        return distance;
+//    }
 
     public void recylingBitmap (Bitmap bm)
     {
