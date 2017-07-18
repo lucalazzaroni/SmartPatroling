@@ -5,18 +5,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 
 /**
  * Created by HEW15J040EL on 12/07/2017.
@@ -30,17 +27,13 @@ public class StorageInteraction extends Activity {
     private static File mediaStorageDir;
     private static File mediaStorageDirBW;
 
-
     public static Bitmap TakeFromMemory(Bitmap imgBitmap, Bitmap bmpGrayscale, Canvas canGray)
     {
-        //recupero immagine scattata col drone dalla memoria
-//        imgBitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Pictures/Drone Pictures/tempdrone.jpeg");
-        //taglio
-//        imgBitmap = Bitmap.createBitmap(imgBitmap, 140, 0, 360, 360, null, true);
+
         //converto in bianco e nero
         bmpGrayscale = ImageProcessing.toGreyScale(imgBitmap, bmpGrayscale, canGray);
 
-//            salvo la foto in B/N in memoria per questioni di debug
+//      salvo la foto in B/N in memoria per questioni di debug
         try
         {
             File bnFile;
@@ -49,7 +42,6 @@ public class StorageInteraction extends Activity {
             FileOutputStream fosBw = new FileOutputStream(bnFile);
             bmpGrayscale.compress(Bitmap.CompressFormat.JPEG, 100, fosBw);
             fosBw.close();
-//                recylingBitmap(bwImage);
         }
         catch (FileNotFoundException fnfe)
         {
@@ -62,23 +54,10 @@ public class StorageInteraction extends Activity {
         return bmpGrayscale;
     }
 
-
-
-    //Funzione utile per il debug senza drone
-    public static Bitmap FakeTakeFromMemory(int count)
-    {
-        int[] i = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9};
-        return BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Pictures/Smart Patroling BW/lazza" + i[count++] + ".jpeg");
-    }
-
-
-
     public static Bitmap FromJpegToBitmap(String _filepath)
     {
         return BitmapFactory.decodeFile( _filepath );
     }
-
-
 
     public static File getOutputMediaFile(int type, Context context, File mediaFile, String imgPath) {
         if (Environment.getExternalStorageState() != null) {
@@ -86,7 +65,7 @@ public class StorageInteraction extends Activity {
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                     IMAGE_DIRECTORY_NAME);
 
-            // Create the storage directory if it does not exist
+            // Create la cartella di storage se non esiste
             if (!mediaStorageDir.exists()) {
                 if (!mediaStorageDir.mkdirs()) {
                     Log.d(IMAGE_DIRECTORY_NAME, "Oops! Failed to create "
@@ -108,7 +87,6 @@ public class StorageInteraction extends Activity {
                 }
             }
 
-
             if (type == MEDIA_TYPE_IMAGE) {
                 imgPath = mediaStorageDir.getPath() + File.separator + "IMG_temp.jpeg";
                 mediaFile = new File(imgPath);
@@ -121,8 +99,6 @@ public class StorageInteraction extends Activity {
         return  null;
     }
 
-
-
     public static boolean SaveColorAndBW(EditText writename, Context context, Bitmap rotatedBitmap,
                                          Bitmap bitmap, Bitmap bmpGrayscale, Canvas canGray, File mediaFile)
     {
@@ -134,12 +110,6 @@ public class StorageInteraction extends Activity {
             return false;
         }
 
-//                File from = new File(mediaStorageDir.getPath(), "IMG_temp.jpg");
-//        while(_writename == ".jpeg")
-//        {
-//            Toast.makeText(getApplicationContext(), "Image must have a name!", Toast.LENGTH_SHORT).show();
-//            _writename = writename.getText().toString() + ".jpeg";
-//        }
         File to = new File(mediaStorageDir.getPath(),_writename);
         if(!mediaFile.renameTo(to)){
             Toast.makeText(context, "Image not renamed!", Toast.LENGTH_SHORT).show();
@@ -149,10 +119,6 @@ public class StorageInteraction extends Activity {
             Toast.makeText(context, "Picture saved", Toast.LENGTH_SHORT).show();
         }
 
-//        Uri fileUri = Uri.fromFile(to); //percorso del file rinominato
-//                BitmapFactory.Options optionsIm = new BitmapFactory.Options();
-//                bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
-//                        optionsIm);
         bmpGrayscale = ImageProcessing.toGreyScale(rotatedBitmap, bitmap, bmpGrayscale, canGray);
         try {
             File bnFile;
@@ -172,5 +138,4 @@ public class StorageInteraction extends Activity {
         }
         return true;
     }
-
 }

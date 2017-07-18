@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-
 import com.example.hew15j040el.smartpatroling.R;
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -37,7 +36,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-
             }
         });
 

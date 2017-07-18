@@ -13,8 +13,6 @@
         <item>12</item>
         <item>11</item>
         <item>10</item>
-        <item>9</item>
-        <item>8</item>
 
     </string-array>
 
@@ -28,6 +26,5 @@
         <item>75%</item>
         <item>70%</item>
         <item>65%</item>
-        <item>30%</item>
     </string-array>
 </resources>

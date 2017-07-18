@@ -10,12 +10,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.example.hew15j040el.smartpatroling.Libraries.PhotoSaver;
 import com.example.hew15j040el.smartpatroling.R;
-
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.widget.MediaController;
@@ -32,10 +29,8 @@ public class TakePhotoRecognition extends Activity {
     private Context context = null;
     private VideoView myVideoView;
     private final String PATH = "tcp://192.168.1.1:5555/";
-//    private String imgpath = null;
     private Bitmap imgBitmap = null;
     private PhotoSaver ps;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +43,6 @@ public class TakePhotoRecognition extends Activity {
         try
         {
             setContentView(R.layout.take_photo_recognition);
-
             context = getApplicationContext();
             myVideoView = (VideoView) findViewById(R.id.vitamio_videoView);
             myVideoView.setVideoQuality(MediaPlayer.VIDEOQUALITY_HIGH);
@@ -74,23 +68,8 @@ public class TakePhotoRecognition extends Activity {
 
                     tonoMP.start();
                     Log.i(TAG, "setOnClickListener");
-
-//trasforma la foto in memoria "/Pictures/Drone Pictures/Fakebianconero.jpeg" in una ritagliata e in bianco e nero
-//                FakePhotoDrone();
-
-
                     capturePhoto(null);
-
                     Intent imr = new Intent(getApplicationContext(), MatchingRecognition.class);
-
-                    //Convert to byte array
-//                if(imgBitmap!=null) {
-//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                    imgBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-//                    imr.putExtra("imageByteArray", stream.toByteArray());
-//                }
-
-
                     startActivity(imr);
                 }
             });
@@ -113,14 +92,12 @@ public class TakePhotoRecognition extends Activity {
     private void capturePhoto(View v){
         try {
             ps = new PhotoSaver(context, myVideoView.getMediaPlayer());
-//            imgBitmap = ps.record();
             ps.record();
         }
         catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Picture error!", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
@@ -139,53 +116,6 @@ public class TakePhotoRecognition extends Activity {
             bm = null;
         }
     }
-
-
-
-
-    //////////////////////////////////////////////////
-//    public void FakePhotoDrone(){
-//        //recupero immagine scattata col drone dalla memoria
-//        Bitmap daMemoria= BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()+"/Pictures/Drone Pictures/Fakebianconero.jpeg");
-//
-//        Bitmap bwImage = toGreyScale(daMemoria);
-//        try {
-//            File bnFile;
-//            String _bnPath = Environment.getExternalStorageDirectory()+"/Pictures/" + "Drone Pictures BW" + "/"+ "Fakebianconero" + ".jpeg";
-//            bnFile = new File(_bnPath);
-//            FileOutputStream fosBw = new FileOutputStream(bnFile);
-//            bwImage.compress(Bitmap.CompressFormat.JPEG, 100, fosBw);
-//            fosBw.close();
-//            recylingBitmap(bwImage);
-//        }
-//        catch (FileNotFoundException fnfe)
-//        {
-//            fnfe.printStackTrace();
-//        }
-//        catch (IOException ioe)
-//        {
-//            ioe.printStackTrace();
-//        }
-
-//    }
-//    public Bitmap toGreyScale(Bitmap bmpOriginal){
-//        Bitmap bmpGrayscale = Bitmap.createBitmap(360, 360,Bitmap.Config.ARGB_8888);
-//        Canvas c = new Canvas(bmpGrayscale);
-//        Paint paint = new Paint();
-//        ColorMatrix cm = new ColorMatrix();
-//        cm.setSaturation(0);
-//        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
-//        paint.setColorFilter(f);
-//        c.drawBitmap(bmpOriginal, new Rect(140,0,500,360),new Rect(0,0,360,360), paint);
-//
-//        //bmpGrayscale.setPixel(0,0, bmpOriginal.getPixel(0,0)    );
-//
-//        // recyclingCanvas(canGray);
-//
-//        return bmpGrayscale;
-//    }
-    /////////////////////////////////////////////////
-
 }
 
 

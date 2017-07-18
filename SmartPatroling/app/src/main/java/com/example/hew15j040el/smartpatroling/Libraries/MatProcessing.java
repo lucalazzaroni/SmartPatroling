@@ -11,7 +11,6 @@ public class MatProcessing extends Activity {
     private static final int RES = 129600;
 
     //matrice di covarianza A'A
-
     public static double[][] Covariance(float[][] imagesLessMean, int numberOfImages, double[][] cov)
     {
         for (int r = 0; r < numberOfImages; r++)
